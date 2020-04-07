@@ -1693,6 +1693,7 @@ func (g *Gorilla) swagPOSTNodeApp(w http.ResponseWriter, r *http.Request) { //no
 	if err != nil {
 		log.Errf("Error creating node app: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error: %v", err)
 		return
 	}
 
