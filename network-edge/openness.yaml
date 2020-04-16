@@ -47,9 +47,6 @@ spec:
       labels:
         name: eaa
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       initContainers:
       - name: alpine
         image: alpine:latest
@@ -132,9 +129,6 @@ spec:
       labels:
         name: edgedns
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       containers:
       - name: edgedns
         image: edgednssvr:1.0
@@ -225,9 +219,6 @@ spec:
       labels:
         name: syslog-ng
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       containers:
       - name: syslog-ng
         image: balabit/syslog-ng:3.19.1

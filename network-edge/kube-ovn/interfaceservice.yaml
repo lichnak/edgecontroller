@@ -34,9 +34,6 @@ spec:
       labels:
         name: interfaceservice
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       containers:
       - name: interfaceservice
         image: interfaceservice:1.0
