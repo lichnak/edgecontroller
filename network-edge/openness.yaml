@@ -87,6 +87,7 @@ spec:
       - name: certs-sec
         secret:
           secretName: eaa-tls
+          defaultMode: 384
       - name: certs
         hostPath:
           path: /etc/openness/certs/eaa

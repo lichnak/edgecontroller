@@ -13,7 +13,7 @@ if [ -f "$2/key.pem" ] && [ -f "$2/cert.pem" ]; then
     exit 0
 fi
 
-openssl ecparam -genkey -name secp384r1 -out "$2/key.pem"
+openssl ecparam -genkey -name secp384r1 | openssl pkcs8 -topk8 -nocrypt -out "$2/key.pem"
  
 if [ -z "$3" ]; then
     echo "Generating certificate..."
