@@ -134,23 +134,32 @@ class AddAppFormDialog extends Component {
 
     this.setState({ loading: true });
 
-    return ApiClient.post('/apps', getAppFormValues())
-      .then((resp) => {
-        this.setState({ loading: false });
-        this.handleDialogClose();
-        this.handleParentRefresh();
-        this.props.enqueueSnackbar(`Successfully added app.`, { variant: 'success' });
-      })
-      .catch((err) => {
-        if (err && err.hasOwnProperty('response') && err.response.data) {
-          this.setState({ loading: false, submitError: true, helperText: err.response.data });
-          this.props.enqueueSnackbar(`${err.response.data}.`, { variant: 'error' });
-          return;
-        }
+    const { name, version, type, vendor, description, cores, memory, ports, source, epafeatures } = this.state;
 
-        this.setState({ loading: false, submitError: true, helperText: err.toString() });
-        this.props.enqueueSnackbar(`${err.toString()}`, { variant: 'error' });
-      });
+    if (source.split(0,5) !== "https") {
+      this.setState({ loading: false });
+      this.props.enqueueSnackbar(`Failed to add app: need https source`, { variant: `error` });
+      return;
+    }
+    else {
+      return ApiClient.post('/apps', getAppFormValues())
+        .then((resp) => {
+          this.setState({ loading: false });
+          this.handleDialogClose();
+          this.handleParentRefresh();
+          this.props.enqueueSnackbar(`Successfully added app.`, { variant: 'success' });
+        })
+        .catch((err) => {
+          if (err && err.hasOwnProperty('response') && err.response.data) {
+            this.setState({ loading: false, submitError: true, helperText: err.response.data });
+            this.props.enqueueSnackbar(`${err.response.data}.`, { variant: 'error' });
+            return;
+          }
+  
+          this.setState({ loading: false, submitError: true, helperText: err.toString() });
+          this.props.enqueueSnackbar(`${err.toString()}`, { variant: 'error' });
+        });
+    }
   };
 
   render() {
