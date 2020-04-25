@@ -47,14 +47,13 @@ var pfdCmd = &cobra.Command{
 	SilenceUsage: true,
 }
 
-//paCmd represents the Policy Authorization (PA) commands
+//paCmd represents the policy authorization commands
 var paCmd = &cobra.Command{
-	Use:		"policy-authorization",
-	Short:		"Policy Authorization (PA) command line",
-	Args:		cobra.MaximumNArgs(6),
-	SilenceUsage:	true,
+	Use:          "policy-authorization",
+	Short:        "Policy Authorization (PA) command line",
+	Args:         cobra.MaximumNArgs(6),
+	SilenceUsage: true,
 }
-
 
 func init() {
 
@@ -112,7 +111,7 @@ Flags:
 	pfdCmd.SetHelpTemplate(help)
 
 	//add `policy-authorization` cmd
-	cncaCmd.AddCommand(pacmd)
+	cncaCmd.AddCommand(paCmd)
 	paCmd.SetHelpTemplate(paHelp)
 }
 

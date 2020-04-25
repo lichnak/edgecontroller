@@ -163,6 +163,67 @@ var pfdApplyCmd = &cobra.Command{
 	},
 }
 
+//paApplyCmd represents apply command
+var paApplyCmd = &cobra.Command{
+	Use: "apply",
+	Short: "Create NGC AF PCF application session context" +
+		"using YAML configuration file",
+	Args: cobra.MaximumNArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		// Read file from the filename provided in command
+		data, err := readInputData(cmd)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var c Header
+		if err = yaml.Unmarshal(data, &c); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		if c.Kind != "ngc_policy_authorization" {
+			fmt.Println(errors.New("`kind` missing or unknown in YAML file"))
+			return
+		}
+
+		var s AFAscReqData
+		if err = yaml.Unmarshal(data, &s); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		var appSession []byte
+		appSession, err = yaml.Marshal(s.Policy)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		//fmt.Println(string(appSession))
+
+		appSession, err = y2j.YAMLToJSON(appSession)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		//fmt.Println(string(appSession))
+
+		// create new app-session
+		/* ******TO-DO****** */
+		/*var appSessionLoc string
+		appSessionLoc, err = AFCreateAppSession(appSession)
+		if err != nil {
+			klog.Info(err)
+			return
+		}
+		fmt.Println("App-session URI:", appSessionLoc)*/
+
+	},
+}
+
 func init() {
 
 	const help = `Apply LTE CUPS userplane or NGC AF TI subscription
@@ -192,6 +253,21 @@ Flags:
   -h, --help       help
   -f, --filename   YAML configuration file
 `
+
+	const paHelp = `Create NGC AF PCF application session context
+using YAML configuration file
+
+Usage:
+  cnca policy-authorization apply -f <config.yml>
+
+Example:
+  cnca policy-authorization apply -f <config.yml>
+
+Flags:
+  -h, --help       help
+  -f, --filename   YAML configuration file
+`
+
 	// add `apply` command
 	cncaCmd.AddCommand(applyCmd)
 	applyCmd.Flags().StringP("filename", "f", "", "YAML configuration file")
@@ -203,6 +279,12 @@ Flags:
 	pfdApplyCmd.Flags().StringP("filename", "f", "", "YAML configuration file")
 	_ = pfdApplyCmd.MarkFlagRequired("filename")
 	pfdApplyCmd.SetHelpTemplate(pfdHelp)
+
+	//add policy-authorization  (pa) `apply` command
+	paCmd.AddCommand(paApplyCmd)
+	paApplyCmd.Flags().StringP("filename", "f", "", "YAML configuration file")
+	_ = paApplyCmd.MarkFlagRequired("filename")
+	paApplyCmd.SetHelpTemplate(paHelp)
 }
 
 func readInputData(cmd *cobra.Command) ([]byte, error) {

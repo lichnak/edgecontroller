@@ -9,6 +9,7 @@ type Header struct {
 	//  ngc: 5G Traffic Influence Subscription, or
 	//  lte: LTE CUPS Userplane, or
 	//  ngc_pfd: 5G PFD Transaction
+	//  ngc_policy_authorization: 5G PCF App session
 	Kind string `yaml:"kind"`
 }
 
@@ -24,6 +25,10 @@ type AFTrafficInfluSub struct {
 		AfTransID string `yaml:"afTransId,omitempty"`
 		// Identifies whether an application can be relocated once a location of the application has been selected.
 		AppReloInd bool `yaml:"appReloInd,omitempty"`
+		// Identifies whether the AF request applies to any UE.
+		AnyUeInd bool `yaml:"anyUeInd,omitempty"`
+		// Set to true by the AF to request the NEF to send a test notification. Set to false or omitted otherwise.
+		RequestTestNotification bool `yaml:"requestTestNotification,omitempty"`
 		// Identifies data network name
 		DNN string `yaml:"dnn,omitempty"`
 		// Snssai
@@ -35,8 +40,6 @@ type AFTrafficInfluSub struct {
 		// and the domain identifier shall be encoded as strings that do not contain any \"@\" characters.
 		// See Clauses 4.6.2 and 4.6.3 of 3GPP TS 23.682 for more information.
 		ExternalGroupID string `yaml:"externalGroupId,omitempty"`
-		// Identifies whether the AF request applies to any UE.
-		AnyUeInd bool `yaml:"anyUeInd,omitempty"`
 		// Identifies the requirement to be notified of the event(s):
 		// - UP_PATH_CHANGE
 		SubscribedEvents []string `yaml:"subscribedEvents,omitempty"`
@@ -56,8 +59,6 @@ type AFTrafficInfluSub struct {
 		DNAIChgType string `yaml:"dnaiChgType,omitempty"`
 		// string formatted according to IETF RFC 3986 identifying a referenced resource.
 		NotificationDestination string `yaml:"notificationDestination,omitempty"`
-		// Set to true by the AF to request the NEF to send a test notification. Set to false or omitted otherwise.
-		RequestTestNotification bool `yaml:"requestTestNotification,omitempty"`
 		// WebsockNotifConfig
 		WebsockNotifConfig struct {
 			WebsocketURI        string `yaml:"websocketUri,omitempty"`
@@ -266,5 +267,71 @@ type AFPfdData struct {
 		// delayed cannot be satisfied, i.e. it is smaller than the caching time,
 		// but the PFD data is still stored.
 		CachingTime *uint64 `yaml:"cachingTime,omitempty"`
+	} `yaml:"policy"`
+}
+
+//AFAscReqData describes Application session context request data
+type AFAscReqData struct {
+	H      Header
+	Policy struct {
+		AfAppID   string `yaml:"afAppId,omitempty"`
+		AfRoutReq struct {
+			AppReloc    bool `yaml:"appReloc,omitempty"`
+			RouteToLocs []struct {
+				DNAI        string `yaml:"dnai"`
+				RouteProfID string `yaml:"routeProfId,omitempty"`
+				RouteInfo   struct {
+					IPv4Addr   string `yaml:"ipv4Addr,omitempty"`
+					IPv6Addr   string `yaml:"ipv6Addr,omitempty"`
+					PortNumber int32  `yaml:"portNumber"`
+				} `yaml:"routeInfo,omitempty"`
+			} `yaml:"routeToLocs,omitempty"`
+			SpVal struct {
+				PresenceInfoList map[string]PresenceInfo `yaml:"presenceInfoList"`
+			} `yaml:"spVal,omitempty"`
+			TempVals []struct {
+				StartTime string `yaml:"startTime,omitempty"`
+				StopTime  string `yaml:"stopTime,omitempty"`
+			} `yaml:"tempVals,omitempty"`
+			UpPathChgSub struct {
+				NotificationURI string `yaml:"notificationUri"`
+				NotifCorreID    string `yaml:"notifCorreId"`
+				DnaiChgType     string `yaml:"dnaiChgType"`
+			} `yaml:"upPathChgSub,omitempty"`
+		} `yaml:"afRoutReq,omitempty"`
+		AspID    string `yaml:"aspId,omitempty"`
+		BdtRefID string `yaml:"bdtRefId,omitempty"`
+		Dnn      string `yaml:"dnn,omitempty"`
+		EvSubsc  struct {
+			Events []struct {
+				Event       string `yaml:"event"`
+				NotifMethod string `yaml:"notifMethod,omitempty"`
+			} `yaml:"events"`
+			NotifURI string `yaml:"notifUri,omitempty"`
+			UsgThres struct {
+				Duration       int32 `yaml:"duration,omitempty"`
+				TotalVolume    int64 `yaml:"totalVolume,omitempty"`
+				DownlinkVolume int64 `yaml:"downlinkVolume,omitempty"`
+				UplinkVolume   int64 `yaml:"uplinkVolume,omitempty"`
+			} `yaml:"usgThres,omitempty"`
+		} `yaml:"evSubsc,omitempty"`
+
+		MedComponents map[string]MediaComponent `yaml:"medComponents,omitempty"`
+
+		IPDomain  string `yaml:"ipDomain,omitempty"`
+		MpsID     string `yaml:"mpsId,omitempty"`
+		NotifURI  string `yaml:"notifUri"`
+		SliceInfo struct {
+			SST int32  `yaml:"sst"`
+			SD  string `yaml:"sd,omitempty"`
+		} `yaml:"sliceInfo,omitempty"`
+		SponID     string `yaml:"sponId,omitempty"`
+		SponStatus string `yaml:"sponStatus,omitempty"`
+		Supi       string `yaml:"supi,omitempty"`
+		Gpsi       string `yaml:"gpsi,omitempty"`
+		SuppFeat   string `yaml:"suppFeat"`
+		UeIpv4     string `yaml:"ueIpv4,omitempty"`
+		UeIpv6     string `yaml:"ueIpv6,omitempty"`
+		UeMac      string `yaml:"ueMac,omitempty"`
 	} `yaml:"policy"`
 }
