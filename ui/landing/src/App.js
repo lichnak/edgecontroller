@@ -24,11 +24,11 @@ const useStyles = theme => ({
   },
   main: {
     width: 'auto',
-    marginTop: theme.spacing.unit * 14,
-    marginBottom: theme.spacing.unit * 2,
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(600 + theme.spacing.unit * 4)]: {
+    marginTop: theme.spacing(14),
+    marginBottom: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(600 + theme.spacing(4))]: {
       width: 800,
       marginLeft: 'auto',
       marginRight: 'auto',
