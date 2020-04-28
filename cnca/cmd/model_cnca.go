@@ -286,8 +286,45 @@ type AFAscReqData struct {
 					PortNumber int32  `yaml:"portNumber"`
 				} `yaml:"routeInfo,omitempty"`
 			} `yaml:"routeToLocs,omitempty"`
-			SpVal struct {
-				PresenceInfoList map[string]PresenceInfo `yaml:"presenceInfoList"`
+			SpVal []struct {
+				//PresenceInfoList map[string]PresenceInfo  `yaml:"presenceInfoList"`
+				PresenceInfoList struct {
+					PraID            string `yaml:"praId,omitempty"`
+					PresenceState    string `yaml:"presenceState,omitempty"`
+					TrackingAreaList []struct {
+						PlmnID struct {
+							Mcc string `yaml:"mcc"`
+							Mnc string `yaml:"mnc"`
+						} `yaml:"plmnId"`
+						Tac string `yaml:"tac"`
+					} `yaml:"trackingAreaList,omitempty"`
+					EcgiList []struct {
+						PlmnID struct {
+							Mcc string `yaml:"mcc"`
+							Mnc string `yaml:"mnc"`
+						} `yaml:"plmnId"`
+						EutraCellID string `yaml:"eutraCellId"`
+					} `yaml:"ecgiList,omitempty"`
+					NcgiList []struct {
+						PlmnID struct {
+							Mcc string `yaml:"mcc"`
+							Mnc string `yaml:"mnc"`
+						} `yaml:"plmnId"`
+						NrCellID string `yaml:"nrCellId"`
+					} `yaml:"ncgiList,omitempty"`
+					GlobalRanNodeIDList []struct {
+						PlmnID struct {
+							Mcc string `yaml:"mcc"`
+							Mnc string `yaml:"mnc"`
+						} `yaml:"plmnId"`
+						N3IwfID string `yaml:"n3IwfId,omitempty"`
+						GnbID   struct {
+							BitLength int32  `yaml:"bitLength"`
+							GNBValue  string `yaml:"gNBValue"`
+						} `yaml:"gNbId,omitempty"`
+						NgeNbID string `yaml:"ngeNbId,omitempty"`
+					} `yaml:"globalRanNodeIdList,omitempty"`
+				} `yaml:"presenceInfoList"`
 			} `yaml:"spVal,omitempty"`
 			TempVals []struct {
 				StartTime string `yaml:"startTime,omitempty"`
@@ -316,7 +353,104 @@ type AFAscReqData struct {
 			} `yaml:"usgThres,omitempty"`
 		} `yaml:"evSubsc,omitempty"`
 
-		MedComponents map[string]MediaComponent `yaml:"medComponents,omitempty"`
+		//MedComponents map[string]MediaComponent `yaml:"medComponents,omitempty"`
+
+		MedComponents []struct {
+			ContVer  int32  `yaml:"contVer,omitempty"`
+			MedCompN int32  `yaml:"medCompN"`
+			AfAppID  string `yaml:"afAppId,omitempty"`
+
+			AfRoutReq struct {
+				AppReloc    bool `yaml:"appReloc,omitempty"`
+				RouteToLocs []struct {
+					DNAI        string `yaml:"dnai"`
+					RouteProfID string `yaml:"routeProfId,omitempty"`
+					RouteInfo   struct {
+						IPv4Addr   string `yaml:"ipv4Addr,omitempty"`
+						IPv6Addr   string `yaml:"ipv6Addr,omitempty"`
+						PortNumber int32  `yaml:"portNumber"`
+					} `yaml:"routeInfo,omitempty"`
+				} `yaml:"routeToLocs,omitempty"`
+				SpVal struct {
+					//PresenceInfoList map[string]PresenceInfo  `yaml:"presenceInfoList"`
+					PresenceInfoList struct {
+						PraID            string `yaml:"praId,omitempty"`
+						PresenceState    string `yaml:"presenceState,omitempty"`
+						TrackingAreaList []struct {
+							PlmnID struct {
+								Mcc string `yaml:"mcc"`
+								Mnc string `yaml:"mnc"`
+							} `yaml:"plmnId"`
+							Tac string `yaml:"tac"`
+						} `yaml:"trackingAreaList,omitempty"`
+						EcgiList []struct {
+							PlmnID struct {
+								Mcc string `yaml:"mcc"`
+								Mnc string `yaml:"mnc"`
+							} `yaml:"plmnId"`
+							EutraCellID string `yaml:"eutraCellId"`
+						} `yaml:"ecgiList,omitempty"`
+						NcgiList []struct {
+							PlmnID struct {
+								Mcc string `yaml:"mcc"`
+								Mnc string `yaml:"mnc"`
+							} `yaml:"plmnId"`
+							NrCellID string `yaml:"nrCellId"`
+						} `yaml:"ncgiList,omitempty"`
+						GlobalRanNodeIDList []struct {
+							PlmnID struct {
+								Mcc string `yaml:"mcc"`
+								Mnc string `yaml:"mnc"`
+							} `yaml:"plmnId"`
+							N3IwfID string `yaml:"n3IwfId,omitempty"`
+							GnbID   struct {
+								BitLength int32  `yaml:"bitLength"`
+								GNBValue  string `yaml:"gNBValue"`
+							} `yaml:"gNbId,omitempty"`
+							NgeNbID string `yaml:"ngeNbId,omitempty"`
+						} `yaml:"globalRanNodeIdList,omitempty"`
+					} `yaml:"presenceInfoList"`
+				} `yaml:"spVal,omitempty"`
+				TempVals []struct {
+					StartTime string `yaml:"startTime,omitempty"`
+					StopTime  string `yaml:"stopTime,omitempty"`
+				} `yaml:"tempVals,omitempty"`
+				UpPathChgSub struct {
+					NotificationURI string `yaml:"notificationUri"`
+					NotifCorreID    string `yaml:"notifCorreId"`
+					DnaiChgType     string `yaml:"dnaiChgType"`
+				} `yaml:"upPathChgSub,omitempty"`
+			} `yaml:"afRoutReq,omitempty"`
+
+			Codecs  []string `yaml:"codecs,omitempty"`
+			FStatus string   `yaml:"fStatus,omitempty"`
+			MarBwDl string   `yaml:"marBwDl,omitempty"`
+			MarBwUl string   `yaml:"marBwUl,omitempty"`
+
+			//MedSubComps map[string]MediaSubComponent `yaml:"medSubComps,omitempty"`
+			MedSubComps []struct {
+				EthfDescs []struct {
+					DestMacAddr   string   `yaml:"destMacAddr,omitempty"`
+					EthType       string   `yaml:"ethType"`
+					FDesc         string   `yaml:"fDesc,omitempty"`
+					FDir          string   `yaml:"fDir,omitempty"`
+					SourceMacAddr string   `yaml:"sourceMacAddr,omitempty"`
+					VLANTags      []string `yaml:"vlanTags,omitempty"`
+				}
+				FNum      int32    `yaml:"fNum"`
+				FDescs    []string `yaml:"fDescs,omitempty"`
+				FStatus   string   `yaml:"fStatus,omitempty"`
+				MarBwDl   string   `yaml:"marBwDl,omitempty"`
+				MarBwUl   string   `yaml:"marBwUl,omitempty"`
+				TosTrCl   string   `yaml:"tosTrCl,omitempty"`
+				FlowUsage string   `yaml:"flowUsage,omitempty"`
+			}
+
+			MedType string `yaml:"medType,omitempty"`
+			MirBwDl string `yaml:"mirBwDl,omitempty"`
+			MirBwUl string `yaml:"mirBwUl,omitempty"`
+			ResPrio string `yaml:"resPrio,omitempty"`
+		} `yaml:"medComponents,omitempty"`
 
 		IPDomain  string `yaml:"ipDomain,omitempty"`
 		MpsID     string `yaml:"mpsId,omitempty"`

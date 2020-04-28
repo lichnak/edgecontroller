@@ -194,32 +194,19 @@ var paApplyCmd = &cobra.Command{
 			return
 		}
 
+		paAscReqData := getPaAscReqData(s)
+
 		var appSession []byte
-		appSession, err = yaml.Marshal(s.Policy)
+		appSession, err = json.Marshal(paAscReqData)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		//fmt.Println(string(appSession))
-
-		appSession, err = y2j.YAMLToJSON(appSession)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		//fmt.Println(string(appSession))
+		fmt.Println(string(appSession))
 
 		// create new app-session
 		/* ******TO-DO****** */
-		/*var appSessionLoc string
-		appSessionLoc, err = AFCreateAppSession(appSession)
-		if err != nil {
-			klog.Info(err)
-			return
-		}
-		fmt.Println("App-session URI:", appSessionLoc)*/
 
 	},
 }
@@ -383,4 +370,75 @@ func printPdfTransStatus(pfdTransData []byte, transURI string) {
 			fmt.Printf("      - %s : %s\n", k, v)
 		}
 	}
+}
+
+func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
+	var paAscReqData AppSessionContextReqData
+
+	paAscReqData.AfAppID = inputPaAscReqData.Policy.AfAppID
+	paAscReqData.AspID = inputPaAscReqData.Policy.AspID
+	paAscReqData.BdtRefID = inputPaAscReqData.Policy.BdtRefID
+	paAscReqData.Dnn = inputPaAscReqData.Policy.Dnn
+	paAscReqData.IPDomain = inputPaAscReqData.Policy.IPDomain
+	paAscReqData.MpsID = inputPaAscReqData.Policy.MpsID
+	paAscReqData.NotifURI = inputPaAscReqData.Policy.NotifURI
+	paAscReqData.SponID = inputPaAscReqData.Policy.SponID
+	paAscReqData.Supi = inputPaAscReqData.Policy.Supi
+	paAscReqData.Gpsi = inputPaAscReqData.Policy.Gpsi
+	paAscReqData.SuppFeat = inputPaAscReqData.Policy.SuppFeat
+	paAscReqData.UeIpv4 = IPv4Addr(inputPaAscReqData.Policy.UeIpv4)
+	paAscReqData.UeIpv6 = IPv6Addr(inputPaAscReqData.Policy.UeIpv6)
+	paAscReqData.UeMac = MacAddr(inputPaAscReqData.Policy.UeMac)
+	paAscReqData.SponStatus = SponsoringStatus(inputPaAscReqData.Policy.SponStatus)
+	paAscReqData.SliceInfo = SNSSAI(inputPaAscReqData.Policy.SliceInfo)
+
+	//AfRoutReq
+
+	//MedComponents
+	if &inputPaAscReqData.Policy.MedComponents != nil {
+		paAscReqData.MedComponents = make(map[string]MediaComponent)
+	}
+
+	for _, inputMedComponent := range inputPaAscReqData.Policy.MedComponents {
+		var medComponent MediaComponent
+
+		medComponent.ContVer = inputMedComponent.ContVer
+		medComponent.MedCompN = inputMedComponent.MedCompN
+		medComponent.AfAppID = inputMedComponent.AfAppID
+		medComponent.MarBwDl = inputMedComponent.MarBwDl
+		medComponent.MarBwUl = inputMedComponent.MarBwUl
+		medComponent.MirBwDl = inputMedComponent.MirBwDl
+		medComponent.MirBwUl = inputMedComponent.MirBwUl
+
+		medComponent.Codecs = inputMedComponent.Codecs
+
+		//FStatus
+		medComponent.FStatus = FlowStatus(inputMedComponent.FStatus)
+
+		//ResPrio
+		medComponent.ResPrio = ReservPriority(inputMedComponent.ResPrio)
+
+		//MedType
+		medComponent.MedType = MediaType(inputMedComponent.MedType)
+
+		//MedSubComps
+		if &inputMedComponent.MedSubComps != nil {
+			medComponent.MedSubComps = make(map[string]MediaSubComponent)
+		}
+
+		for _, inputMedSubComponent := range inputMedComponent.MedSubComps {
+			var medSubComponent MediaSubComponent
+
+			medSubComponent.FNum = inputMedSubComponent.FNum
+			medSubComponent.FDescs = inputMedSubComponent.FDescs
+			medSubComponent.FStatus = FlowStatus(inputMedSubComponent.FStatus)
+			medSubComponent.MarBwDl = inputMedSubComponent.MarBwDl
+			medSubComponent.MarBwUl = inputMedSubComponent.MarBwUl
+			medSubComponent.TosTrCl = inputMedSubComponent.TosTrCl
+			medSubComponent.FlowUsage = FlowUsage(inputMedSubComponent.FlowUsage)
+
+		}
+		//what is final paAscReqData?????
+	}
+	return paAscReqData
 }
