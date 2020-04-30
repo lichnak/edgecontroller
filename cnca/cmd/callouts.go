@@ -45,6 +45,13 @@ func getNgcAFPfdServiceURL() string {
 	return NgcAFServiceEndpoint + "/pfd/transactions"
 }
 
+/*func getNgcAFPaServiceURL() string {
+	if UseHTTPProtocol == HTTP2 {
+		return NgcAFServiceHTTP2Endpoint + "policy-authorization/app-sessions"
+	}
+	return NgcAFServiceEndpoint + "policy-authorization/app-sessions"
+}*/
+
 func getLteOAMServiceURL() string {
 	if UseHTTPProtocol == HTTP2 {
 		return LteOAMServiceHTTP2Endpoint + "/userplanes"
@@ -553,3 +560,29 @@ func AFDeletePfdApplication(transID string, appID string) error {
 
 	return nil
 }
+
+/*func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
+
+}*/
+
+/*func AFGetPaAppSession(appSessionID string) ([]byte, error) {
+
+	return nil
+}*/
+
+/*func AFDeletePaAppSession(appSessionID string) error {
+
+	return nil
+}*/
+
+/*func AFPatchPaAppSession(appSessionID string, appSession []byte) ([]byte, error) {
+
+}*/
+
+/*func AFPaEventSubscribe(appSessionID string, appSession []byte) ([]byte, []byte, string, error) {
+
+}
+
+func AFPaEventUnsubscribe(appSessionID string) error {
+
+} */

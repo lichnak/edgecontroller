@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"strconv"
 	"strings"
 
 	y2j "github.com/ghodss/yaml"
@@ -193,6 +194,8 @@ var paApplyCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
+
+		fmt.Printf("After Unmarshall: \n%+v\n", s)
 
 		paAscReqData := getPaAscReqData(s)
 
@@ -390,12 +393,23 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 	paAscReqData.UeIpv6 = IPv6Addr(inputPaAscReqData.Policy.UeIpv6)
 	paAscReqData.UeMac = MacAddr(inputPaAscReqData.Policy.UeMac)
 	paAscReqData.SponStatus = SponsoringStatus(inputPaAscReqData.Policy.SponStatus)
-	paAscReqData.SliceInfo = SNSSAI(inputPaAscReqData.Policy.SliceInfo)
+
+	//SliceInfo
+	if inputPaAscReqData.Policy.SliceInfo != nil {
+		sliceInfo := SNSSAI(*inputPaAscReqData.Policy.SliceInfo)
+		paAscReqData.SliceInfo = &sliceInfo
+	}
 
 	//AfRoutReq
+	/*if inputPaAscReqData.Policy.AfRoutReq != nil {
+	}*/
+
+	//EvSubsc
+	/*if inputPaAscReqData.Policy.EvSubsc != nil {
+	}*/
 
 	//MedComponents
-	if &inputPaAscReqData.Policy.MedComponents != nil {
+	if inputPaAscReqData.Policy.MedComponents != nil {
 		paAscReqData.MedComponents = make(map[string]MediaComponent)
 	}
 
@@ -403,14 +417,18 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 		var medComponent MediaComponent
 
 		medComponent.ContVer = inputMedComponent.ContVer
-		medComponent.MedCompN = inputMedComponent.MedCompN
+		//MedCompN
+		if inputMedComponent.MedCompN != 0 {
+			medComponent.MedCompN = inputMedComponent.MedCompN
+		}
 		medComponent.AfAppID = inputMedComponent.AfAppID
 		medComponent.MarBwDl = inputMedComponent.MarBwDl
 		medComponent.MarBwUl = inputMedComponent.MarBwUl
 		medComponent.MirBwDl = inputMedComponent.MirBwDl
 		medComponent.MirBwUl = inputMedComponent.MirBwUl
-
 		medComponent.Codecs = inputMedComponent.Codecs
+
+		//AfRoutReq
 
 		//FStatus
 		medComponent.FStatus = FlowStatus(inputMedComponent.FStatus)
@@ -422,14 +440,17 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 		medComponent.MedType = MediaType(inputMedComponent.MedType)
 
 		//MedSubComps
-		if &inputMedComponent.MedSubComps != nil {
+		if inputMedComponent.MedSubComps != nil {
 			medComponent.MedSubComps = make(map[string]MediaSubComponent)
 		}
 
 		for _, inputMedSubComponent := range inputMedComponent.MedSubComps {
 			var medSubComponent MediaSubComponent
 
-			medSubComponent.FNum = inputMedSubComponent.FNum
+			//FNum
+			if inputMedSubComponent.FNum != 0 {
+				medSubComponent.FNum = inputMedSubComponent.FNum
+			}
 			medSubComponent.FDescs = inputMedSubComponent.FDescs
 			medSubComponent.FStatus = FlowStatus(inputMedSubComponent.FStatus)
 			medSubComponent.MarBwDl = inputMedSubComponent.MarBwDl
@@ -437,8 +458,22 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 			medSubComponent.TosTrCl = inputMedSubComponent.TosTrCl
 			medSubComponent.FlowUsage = FlowUsage(inputMedSubComponent.FlowUsage)
 
+			//EthfDescs
+			for i, inputEthfDescs := range inputMedSubComponent.EthfDescs {
+				var ethfDescs EthFlowDescription
+
+				ethfDescs.DestMacAddr = inputEthfDescs.DestMacAddr
+				ethfDescs.EthType = inputEthfDescs.EthType
+				ethfDescs.FDesc = inputEthfDescs.FDesc
+				ethfDescs.FDir = inputEthfDescs.FDir
+				ethfDescs.SourceMacAddr = inputEthfDescs.SourceMacAddr
+				ethfDescs.VLANTags = inputEthfDescs.VLANTags
+
+				medSubComponent.EthfDescs[i] = ethfDescs
+			}
+			medComponent.MedSubComps[strconv.Itoa(int(medSubComponent.FNum))] = medSubComponent
 		}
-		//what is final paAscReqData?????
+		paAscReqData.MedComponents[strconv.Itoa(int(medComponent.MedCompN))] = medComponent
 	}
 	return paAscReqData
 }

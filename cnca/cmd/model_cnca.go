@@ -275,7 +275,7 @@ type AFAscReqData struct {
 	H      Header
 	Policy struct {
 		AfAppID   string `yaml:"afAppId,omitempty"`
-		AfRoutReq struct {
+		AfRoutReq *struct {
 			AppReloc    bool `yaml:"appReloc,omitempty"`
 			RouteToLocs []struct {
 				DNAI        string `yaml:"dnai"`
@@ -286,9 +286,8 @@ type AFAscReqData struct {
 					PortNumber int32  `yaml:"portNumber"`
 				} `yaml:"routeInfo,omitempty"`
 			} `yaml:"routeToLocs,omitempty"`
-			SpVal []struct {
-				//PresenceInfoList map[string]PresenceInfo  `yaml:"presenceInfoList"`
-				PresenceInfoList struct {
+			SpVal *struct {
+				PresenceInfoList []struct {
 					PraID            string `yaml:"praId,omitempty"`
 					PresenceState    string `yaml:"presenceState,omitempty"`
 					TrackingAreaList []struct {
@@ -330,7 +329,7 @@ type AFAscReqData struct {
 				StartTime string `yaml:"startTime,omitempty"`
 				StopTime  string `yaml:"stopTime,omitempty"`
 			} `yaml:"tempVals,omitempty"`
-			UpPathChgSub struct {
+			UpPathChgSub *struct {
 				NotificationURI string `yaml:"notificationUri"`
 				NotifCorreID    string `yaml:"notifCorreId"`
 				DnaiChgType     string `yaml:"dnaiChgType"`
@@ -339,13 +338,13 @@ type AFAscReqData struct {
 		AspID    string `yaml:"aspId,omitempty"`
 		BdtRefID string `yaml:"bdtRefId,omitempty"`
 		Dnn      string `yaml:"dnn,omitempty"`
-		EvSubsc  struct {
+		EvSubsc  *struct {
 			Events []struct {
 				Event       string `yaml:"event"`
 				NotifMethod string `yaml:"notifMethod,omitempty"`
 			} `yaml:"events"`
 			NotifURI string `yaml:"notifUri,omitempty"`
-			UsgThres struct {
+			UsgThres *struct {
 				Duration       int32 `yaml:"duration,omitempty"`
 				TotalVolume    int64 `yaml:"totalVolume,omitempty"`
 				DownlinkVolume int64 `yaml:"downlinkVolume,omitempty"`
@@ -360,7 +359,7 @@ type AFAscReqData struct {
 			MedCompN int32  `yaml:"medCompN"`
 			AfAppID  string `yaml:"afAppId,omitempty"`
 
-			AfRoutReq struct {
+			AfRoutReq *struct {
 				AppReloc    bool `yaml:"appReloc,omitempty"`
 				RouteToLocs []struct {
 					DNAI        string `yaml:"dnai"`
@@ -371,9 +370,9 @@ type AFAscReqData struct {
 						PortNumber int32  `yaml:"portNumber"`
 					} `yaml:"routeInfo,omitempty"`
 				} `yaml:"routeToLocs,omitempty"`
-				SpVal struct {
+				SpVal *struct {
 					//PresenceInfoList map[string]PresenceInfo  `yaml:"presenceInfoList"`
-					PresenceInfoList struct {
+					PresenceInfoList []struct {
 						PraID            string `yaml:"praId,omitempty"`
 						PresenceState    string `yaml:"presenceState,omitempty"`
 						TrackingAreaList []struct {
@@ -397,7 +396,7 @@ type AFAscReqData struct {
 							} `yaml:"plmnId"`
 							NrCellID string `yaml:"nrCellId"`
 						} `yaml:"ncgiList,omitempty"`
-						GlobalRanNodeIDList []struct {
+						GlobalRanNodeIDList []*struct {
 							PlmnID struct {
 								Mcc string `yaml:"mcc"`
 								Mnc string `yaml:"mnc"`
@@ -415,7 +414,7 @@ type AFAscReqData struct {
 					StartTime string `yaml:"startTime,omitempty"`
 					StopTime  string `yaml:"stopTime,omitempty"`
 				} `yaml:"tempVals,omitempty"`
-				UpPathChgSub struct {
+				UpPathChgSub *struct {
 					NotificationURI string `yaml:"notificationUri"`
 					NotifCorreID    string `yaml:"notifCorreId"`
 					DnaiChgType     string `yaml:"dnaiChgType"`
@@ -436,7 +435,7 @@ type AFAscReqData struct {
 					FDir          string   `yaml:"fDir,omitempty"`
 					SourceMacAddr string   `yaml:"sourceMacAddr,omitempty"`
 					VLANTags      []string `yaml:"vlanTags,omitempty"`
-				}
+				} `yaml:"ethfDescs,omitempty"`
 				FNum      int32    `yaml:"fNum"`
 				FDescs    []string `yaml:"fDescs,omitempty"`
 				FStatus   string   `yaml:"fStatus,omitempty"`
@@ -444,7 +443,7 @@ type AFAscReqData struct {
 				MarBwUl   string   `yaml:"marBwUl,omitempty"`
 				TosTrCl   string   `yaml:"tosTrCl,omitempty"`
 				FlowUsage string   `yaml:"flowUsage,omitempty"`
-			}
+			} `yaml:"medSubComps,omitempty"`
 
 			MedType string `yaml:"medType,omitempty"`
 			MirBwDl string `yaml:"mirBwDl,omitempty"`
@@ -455,7 +454,7 @@ type AFAscReqData struct {
 		IPDomain  string `yaml:"ipDomain,omitempty"`
 		MpsID     string `yaml:"mpsId,omitempty"`
 		NotifURI  string `yaml:"notifUri"`
-		SliceInfo struct {
+		SliceInfo *struct {
 			SST int32  `yaml:"sst"`
 			SD  string `yaml:"sd,omitempty"`
 		} `yaml:"sliceInfo,omitempty"`

@@ -648,7 +648,7 @@ type AppSessionContextReqData struct {
 	// indication of MPS service request
 	MpsID      string           `json:"mpsId,omitempty"`
 	NotifURI   string           `json:"notifUri"`
-	SliceInfo  SNSSAI           `json:"sliceInfo,omitempty"`
+	SliceInfo  *SNSSAI          `json:"sliceInfo,omitempty"`
 	SponID     string           `json:"sponId,omitempty"`
 	SponStatus SponsoringStatus `json:"sponStatus,omitempty"`
 	Supi       string           `json:"supi,omitempty"`
