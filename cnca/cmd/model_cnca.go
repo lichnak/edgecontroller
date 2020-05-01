@@ -312,12 +312,12 @@ type AFAscReqData struct {
 						NrCellID string `yaml:"nrCellId"`
 					} `yaml:"ncgiList,omitempty"`
 					GlobalRanNodeIDList []struct {
-						PlmnID struct {
+						PlmnID *struct {
 							Mcc string `yaml:"mcc"`
 							Mnc string `yaml:"mnc"`
 						} `yaml:"plmnId"`
 						N3IwfID string `yaml:"n3IwfId,omitempty"`
-						GnbID   struct {
+						GnbID   *struct {
 							BitLength int32  `yaml:"bitLength"`
 							GNBValue  string `yaml:"gNBValue"`
 						} `yaml:"gNbId,omitempty"`
@@ -397,12 +397,12 @@ type AFAscReqData struct {
 							NrCellID string `yaml:"nrCellId"`
 						} `yaml:"ncgiList,omitempty"`
 						GlobalRanNodeIDList []*struct {
-							PlmnID struct {
+							PlmnID *struct {
 								Mcc string `yaml:"mcc"`
 								Mnc string `yaml:"mnc"`
 							} `yaml:"plmnId"`
 							N3IwfID string `yaml:"n3IwfId,omitempty"`
-							GnbID   struct {
+							GnbID   *struct {
 								BitLength int32  `yaml:"bitLength"`
 								GNBValue  string `yaml:"gNBValue"`
 							} `yaml:"gNbId,omitempty"`
