@@ -26,7 +26,7 @@ const styles = theme => ({
     marginBottom: '8px',
   },
   paper: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
     textAlign: 'left',
     color: theme.palette.text.secondary
   },
@@ -38,7 +38,7 @@ const styles = theme => ({
   avatarContainer: {
     [theme.breakpoints.down('sm')]: {
       marginLeft: 0,
-      marginBottom: theme.spacing.unit * 4
+      marginBottom: theme.spacing(4)
     }
   },
   itemContainer: {
@@ -53,7 +53,7 @@ const styles = theme => ({
   },
   baseline: {
     alignSelf: 'baseline',
-    marginLeft: theme.spacing.unit * 4,
+    marginLeft: theme.spacing(4),
     flexGrow: 1,
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
@@ -61,14 +61,14 @@ const styles = theme => ({
       textAlign: 'center',
       alignItems: 'center',
       width: '100%',
-      marginTop: theme.spacing.unit * 2,
-      marginBottom: theme.spacing.unit * 2,
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
       marginLeft: 0
     }
   },
   inline: {
     display: 'inline-block',
-    marginLeft: theme.spacing.unit * 2,
+    marginLeft: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
       marginLeft: 0
     }
@@ -86,7 +86,7 @@ const styles = theme => ({
     }
   },
   backButton: {
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
 });
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2019-2020 Intel Corporation
 
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   primary: {
-    marginRight: theme.spacing.unit * 2
+    marginRight: theme.spacing(2)
   },
   secondary: {
     background: theme.palette.secondary['100'],
