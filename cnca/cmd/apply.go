@@ -396,187 +396,14 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 	paAscReqData.SponStatus = SponsoringStatus(inputPaAscReqData.Policy.SponStatus)
 
 	//SliceInfo
-	//if inputPaAscReqData.Policy.SliceInfo != nil {
-	sliceInfo := SNSSAI(*inputPaAscReqData.Policy.SliceInfo)
-	paAscReqData.SliceInfo = &sliceInfo
-	//}
+	if inputPaAscReqData.Policy.SliceInfo != nil {
+		sliceInfo := SNSSAI(*inputPaAscReqData.Policy.SliceInfo)
+		paAscReqData.SliceInfo = &sliceInfo
+	}
 
 	//AfRoutReq
-	//if inputPaAscReqData.Policy.AfRoutReq != nil {
-	inputAfRoutReq := inputPaAscReqData.Policy.AfRoutReq
-
-	var afRoutReq RoutingRequirement
-
-	afRoutReq.AppReloc = inputAfRoutReq.AppReloc
-
-	//RouteToLocs
-	afRoutReq.RouteToLocs = make([]RouteToLocation, len(inputAfRoutReq.RouteToLocs))
-	for i, inputRouteToLocs := range inputAfRoutReq.RouteToLocs {
-		var routeToLocs RouteToLocation
-
-		routeToLocs.DNAI = DNAI(inputRouteToLocs.DNAI)
-		routeToLocs.RouteProfID = inputRouteToLocs.RouteProfID
-
-		//RouteInfo
-		inputrouteInfo := inputRouteToLocs.RouteInfo
-		var routeInfo RouteInformation
-		routeInfo.IPv4Addr = IPv4Addr(inputrouteInfo.IPv4Addr)
-		routeInfo.IPv6Addr = IPv6Addr(inputrouteInfo.IPv6Addr)
-		routeInfo.PortNumber = inputrouteInfo.PortNumber
-
-		routeToLocs.RouteInfo = routeInfo
-		afRoutReq.RouteToLocs[i] = routeToLocs
-
-	}
-
-	//SpVal
-	//if inputAfRoutReq.SpVal != nil {
-	inputSpVal := inputAfRoutReq.SpVal
-	var spVal SpatialValidity
-
-	spVal.PresenceInfoList = make(map[string]PresenceInfo)
-
-	for _, inputPresenceInfoList := range inputSpVal.PresenceInfoList {
-		var presenceInfoList PresenceInfo
-
-		presenceInfoList.PraID = inputPresenceInfoList.PraID
-		presenceInfoList.PresenceState = PresenceState(inputPresenceInfoList.PresenceState)
-
-		//TrackingAreaList
-		presenceInfoList.TrackingAreaList = make([]Tai, len(inputPresenceInfoList.TrackingAreaList))
-		for i, inputTai := range inputPresenceInfoList.TrackingAreaList {
-			var tai Tai
-
-			tai.PlmnID = PlmnID(inputTai.PlmnID)
-			tai.Tac = inputTai.Tac
-
-			presenceInfoList.TrackingAreaList[i] = tai
-		}
-
-		//EcgiList
-		presenceInfoList.EcgiList = make([]Ecgi, len(inputPresenceInfoList.EcgiList))
-		for i, inputEcgi := range inputPresenceInfoList.EcgiList {
-			var ecgi Ecgi
-
-			ecgi.PlmnID = PlmnID(inputEcgi.PlmnID)
-			ecgi.EutraCellID = inputEcgi.EutraCellID
-
-			presenceInfoList.EcgiList[i] = ecgi
-		}
-
-		//NcgiList
-		presenceInfoList.NcgiList = make([]Ncgi, len(inputPresenceInfoList.NcgiList))
-		for i, inputNcgi := range inputPresenceInfoList.NcgiList {
-			var ncgi Ncgi
-
-			ncgi.PlmnID = PlmnID(inputNcgi.PlmnID)
-			ncgi.NrCellID = inputNcgi.NrCellID
-
-			presenceInfoList.NcgiList[i] = ncgi
-		}
-
-		//GlobalRanNodeIDList
-		presenceInfoList.GlobalRanNodeIDList =
-			make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
-		for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
-			var globalRanNodeID GlobalRanNodeID
-
-			globalRanNodeID.N3IwfID = inputGlobalRanNodeID.N3IwfID
-			globalRanNodeID.NgeNbID = inputGlobalRanNodeID.NgeNbID
-
-			//PlmnID
-			plmnID := PlmnID(*inputGlobalRanNodeID.PlmnID)
-			globalRanNodeID.PlmnID = &plmnID
-
-			//GnbID
-			gnbID := GnbID(*inputGlobalRanNodeID.GnbID)
-			globalRanNodeID.GnbID = &gnbID
-
-			presenceInfoList.GlobalRanNodeIDList[i] = globalRanNodeID
-		}
-
-		spVal.PresenceInfoList[string(presenceInfoList.PresenceState)] = presenceInfoList
-	}
-	afRoutReq.SpVal = &spVal
-	//}
-
-	//TempVals
-	afRoutReq.TempVals = make([]TemporalValidity, len(inputAfRoutReq.TempVals))
-	for i, inputTempVals := range inputAfRoutReq.TempVals {
-		var tempVals TemporalValidity
-
-		tempVals.StartTime = inputTempVals.StartTime
-		tempVals.StopTime = inputTempVals.StopTime
-
-		afRoutReq.TempVals[i] = tempVals
-	}
-
-	//UpPathChgSub
-	//if inputAfRoutReq.UpPathChgSub != nil {
-	inputUpPathChgSub := inputAfRoutReq.UpPathChgSub
-	var upPathChgSub UpPathChgEvent
-
-	upPathChgSub.NotificationURI = inputUpPathChgSub.NotificationURI
-	upPathChgSub.NotifCorreID = inputUpPathChgSub.NotifCorreID
-	upPathChgSub.DnaiChgType = DNAIChangeType(inputUpPathChgSub.DnaiChgType)
-
-	afRoutReq.UpPathChgSub = &upPathChgSub
-	//}
-	paAscReqData.AfRoutReq = &afRoutReq
-	//}
-
-	//EvSubsc
-
-	//if inputPaAscReqData.Policy.EvSubsc != nil {
-	inputEvSubsc := inputPaAscReqData.Policy.EvSubsc
-
-	var evSubsc EventsSubscReqData
-
-	//Events
-	evSubsc.Events = make([]EventSubscription, len(inputEvSubsc.Events))
-	for i, inputEvents := range inputEvSubsc.Events {
-		var events EventSubscription
-
-		events.Event = Event(inputEvents.Event)
-		events.NotifMethod = NotifMethod(inputEvents.NotifMethod)
-
-		evSubsc.Events[i] = events
-	}
-
-	//NotifURI
-	evSubsc.NotifURI = inputEvSubsc.NotifURI
-
-	//UsgThres
-	//if inputEvSubsc.UsgThres != nil {
-	usgThres := UsageThreshold(*inputEvSubsc.UsgThres)
-	evSubsc.UsgThres = &usgThres
-	//}
-	paAscReqData.EvSubsc = &evSubsc
-	//}
-
-	//MedComponents
-	//if inputPaAscReqData.Policy.MedComponents != nil {
-	paAscReqData.MedComponents = make(map[string]MediaComponent)
-	//}
-
-	for _, inputMedComponent := range inputPaAscReqData.Policy.MedComponents {
-		var medComponent MediaComponent
-
-		medComponent.ContVer = inputMedComponent.ContVer
-		//MedCompN
-		//if inputMedComponent.MedCompN != 0 {
-		medComponent.MedCompN = inputMedComponent.MedCompN
-		//}
-		medComponent.AfAppID = inputMedComponent.AfAppID
-		medComponent.MarBwDl = inputMedComponent.MarBwDl
-		medComponent.MarBwUl = inputMedComponent.MarBwUl
-		medComponent.MirBwDl = inputMedComponent.MirBwDl
-		medComponent.MirBwUl = inputMedComponent.MirBwUl
-		medComponent.Codecs = inputMedComponent.Codecs
-
-		//AfRoutReq
-		//if inputMedComponent.AfRoutReq != nil {
-		inputAfRoutReq := inputMedComponent.AfRoutReq
+	if inputPaAscReqData.Policy.AfRoutReq != nil {
+		inputAfRoutReq := inputPaAscReqData.Policy.AfRoutReq
 
 		var afRoutReq RoutingRequirement
 
@@ -603,75 +430,248 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 		}
 
 		//SpVal
-		//if inputAfRoutReq.SpVal != nil {
-		inputSpVal := inputAfRoutReq.SpVal
-		var spVal SpatialValidity
+		if inputAfRoutReq.SpVal != nil {
+			inputSpVal := inputAfRoutReq.SpVal
+			var spVal SpatialValidity
 
-		spVal.PresenceInfoList = make(map[string]PresenceInfo)
+			spVal.PresenceInfoList = make(map[string]PresenceInfo)
 
-		for _, inputPresenceInfoList := range inputSpVal.PresenceInfoList {
-			var presenceInfoList PresenceInfo
+			for _, inputPresenceInfoList := range inputSpVal.PresenceInfoList {
+				var presenceInfoList PresenceInfo
 
-			presenceInfoList.PraID = inputPresenceInfoList.PraID
-			presenceInfoList.PresenceState = PresenceState(inputPresenceInfoList.PresenceState)
+				presenceInfoList.PraID = inputPresenceInfoList.PraID
+				presenceInfoList.PresenceState = PresenceState(inputPresenceInfoList.PresenceState)
 
-			//TrackingAreaList
-			presenceInfoList.TrackingAreaList = make([]Tai, len(inputPresenceInfoList.TrackingAreaList))
-			for i, inputTai := range inputPresenceInfoList.TrackingAreaList {
-				var tai Tai
+				//TrackingAreaList
+				presenceInfoList.TrackingAreaList = make([]Tai, len(inputPresenceInfoList.TrackingAreaList))
+				for i, inputTai := range inputPresenceInfoList.TrackingAreaList {
+					var tai Tai
 
-				tai.PlmnID = PlmnID(inputTai.PlmnID)
-				tai.Tac = inputTai.Tac
+					tai.PlmnID = PlmnID(inputTai.PlmnID)
+					tai.Tac = inputTai.Tac
 
-				presenceInfoList.TrackingAreaList[i] = tai
+					presenceInfoList.TrackingAreaList[i] = tai
+				}
+
+				//EcgiList
+				presenceInfoList.EcgiList = make([]Ecgi, len(inputPresenceInfoList.EcgiList))
+				for i, inputEcgi := range inputPresenceInfoList.EcgiList {
+					var ecgi Ecgi
+
+					ecgi.PlmnID = PlmnID(inputEcgi.PlmnID)
+					ecgi.EutraCellID = inputEcgi.EutraCellID
+
+					presenceInfoList.EcgiList[i] = ecgi
+				}
+
+				//NcgiList
+				presenceInfoList.NcgiList = make([]Ncgi, len(inputPresenceInfoList.NcgiList))
+				for i, inputNcgi := range inputPresenceInfoList.NcgiList {
+					var ncgi Ncgi
+
+					ncgi.PlmnID = PlmnID(inputNcgi.PlmnID)
+					ncgi.NrCellID = inputNcgi.NrCellID
+
+					presenceInfoList.NcgiList[i] = ncgi
+				}
+
+				//GlobalRanNodeIDList
+				presenceInfoList.GlobalRanNodeIDList =
+					make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+				for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
+					var globalRanNodeID GlobalRanNodeID
+
+					globalRanNodeID.N3IwfID = inputGlobalRanNodeID.N3IwfID
+					globalRanNodeID.NgeNbID = inputGlobalRanNodeID.NgeNbID
+
+					//PlmnID
+					plmnID := PlmnID(*inputGlobalRanNodeID.PlmnID)
+					globalRanNodeID.PlmnID = &plmnID
+
+					//GnbID
+					gnbID := GnbID(*inputGlobalRanNodeID.GnbID)
+					globalRanNodeID.GnbID = &gnbID
+
+					presenceInfoList.GlobalRanNodeIDList[i] = globalRanNodeID
+				}
+
+				spVal.PresenceInfoList[string(presenceInfoList.PresenceState)] = presenceInfoList
 			}
-
-			//EcgiList
-			presenceInfoList.EcgiList = make([]Ecgi, len(inputPresenceInfoList.EcgiList))
-			for i, inputEcgi := range inputPresenceInfoList.EcgiList {
-				var ecgi Ecgi
-
-				ecgi.PlmnID = PlmnID(inputEcgi.PlmnID)
-				ecgi.EutraCellID = inputEcgi.EutraCellID
-
-				presenceInfoList.EcgiList[i] = ecgi
-			}
-
-			//NcgiList
-			presenceInfoList.NcgiList = make([]Ncgi, len(inputPresenceInfoList.NcgiList))
-			for i, inputNcgi := range inputPresenceInfoList.NcgiList {
-				var ncgi Ncgi
-
-				ncgi.PlmnID = PlmnID(inputNcgi.PlmnID)
-				ncgi.NrCellID = inputNcgi.NrCellID
-
-				presenceInfoList.NcgiList[i] = ncgi
-			}
-
-			//GlobalRanNodeIDList
-			presenceInfoList.GlobalRanNodeIDList =
-				make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
-			for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
-				var globalRanNodeID GlobalRanNodeID
-
-				globalRanNodeID.N3IwfID = inputGlobalRanNodeID.N3IwfID
-				globalRanNodeID.NgeNbID = inputGlobalRanNodeID.NgeNbID
-
-				//PlmnID
-				plmnID := PlmnID(*inputGlobalRanNodeID.PlmnID)
-				globalRanNodeID.PlmnID = &plmnID
-
-				//GnbID
-				gnbID := GnbID(*inputGlobalRanNodeID.GnbID)
-				globalRanNodeID.GnbID = &gnbID
-
-				presenceInfoList.GlobalRanNodeIDList[i] = globalRanNodeID
-			}
-
-			spVal.PresenceInfoList[string(presenceInfoList.PresenceState)] = presenceInfoList
-			//}
 			afRoutReq.SpVal = &spVal
-			//}
+		}
+
+		//TempVals
+		afRoutReq.TempVals = make([]TemporalValidity, len(inputAfRoutReq.TempVals))
+		for i, inputTempVals := range inputAfRoutReq.TempVals {
+			var tempVals TemporalValidity
+
+			tempVals.StartTime = inputTempVals.StartTime
+			tempVals.StopTime = inputTempVals.StopTime
+
+			afRoutReq.TempVals[i] = tempVals
+		}
+
+		//UpPathChgSub
+		if inputAfRoutReq.UpPathChgSub != nil {
+			inputUpPathChgSub := inputAfRoutReq.UpPathChgSub
+			var upPathChgSub UpPathChgEvent
+
+			upPathChgSub.NotificationURI = inputUpPathChgSub.NotificationURI
+			upPathChgSub.NotifCorreID = inputUpPathChgSub.NotifCorreID
+			upPathChgSub.DnaiChgType = DNAIChangeType(inputUpPathChgSub.DnaiChgType)
+
+			afRoutReq.UpPathChgSub = &upPathChgSub
+		}
+		paAscReqData.AfRoutReq = &afRoutReq
+	}
+
+	//EvSubsc
+
+	if inputPaAscReqData.Policy.EvSubsc != nil {
+		inputEvSubsc := inputPaAscReqData.Policy.EvSubsc
+
+		var evSubsc EventsSubscReqData
+
+		//Events
+		evSubsc.Events = make([]EventSubscription, len(inputEvSubsc.Events))
+		for i, inputEvents := range inputEvSubsc.Events {
+			var events EventSubscription
+
+			events.Event = Event(inputEvents.Event)
+			events.NotifMethod = NotifMethod(inputEvents.NotifMethod)
+
+			evSubsc.Events[i] = events
+		}
+
+		//NotifURI
+		evSubsc.NotifURI = inputEvSubsc.NotifURI
+
+		//UsgThres
+		if inputEvSubsc.UsgThres != nil {
+			usgThres := UsageThreshold(*inputEvSubsc.UsgThres)
+			evSubsc.UsgThres = &usgThres
+		}
+		paAscReqData.EvSubsc = &evSubsc
+	}
+
+	//MedComponents
+	if inputPaAscReqData.Policy.MedComponents != nil {
+		paAscReqData.MedComponents = make(map[string]MediaComponent)
+	}
+
+	for _, inputMedComponent := range inputPaAscReqData.Policy.MedComponents {
+		var medComponent MediaComponent
+
+		medComponent.ContVer = inputMedComponent.ContVer
+		//MedCompN
+		if inputMedComponent.MedCompN != 0 {
+			medComponent.MedCompN = inputMedComponent.MedCompN
+		}
+		medComponent.AfAppID = inputMedComponent.AfAppID
+		medComponent.MarBwDl = inputMedComponent.MarBwDl
+		medComponent.MarBwUl = inputMedComponent.MarBwUl
+		medComponent.MirBwDl = inputMedComponent.MirBwDl
+		medComponent.MirBwUl = inputMedComponent.MirBwUl
+		medComponent.Codecs = inputMedComponent.Codecs
+
+		//AfRoutReq
+		if inputMedComponent.AfRoutReq != nil {
+			inputAfRoutReq := inputMedComponent.AfRoutReq
+
+			var afRoutReq RoutingRequirement
+
+			afRoutReq.AppReloc = inputAfRoutReq.AppReloc
+
+			//RouteToLocs
+			afRoutReq.RouteToLocs = make([]RouteToLocation, len(inputAfRoutReq.RouteToLocs))
+			for i, inputRouteToLocs := range inputAfRoutReq.RouteToLocs {
+				var routeToLocs RouteToLocation
+
+				routeToLocs.DNAI = DNAI(inputRouteToLocs.DNAI)
+				routeToLocs.RouteProfID = inputRouteToLocs.RouteProfID
+
+				//RouteInfo
+				inputrouteInfo := inputRouteToLocs.RouteInfo
+				var routeInfo RouteInformation
+				routeInfo.IPv4Addr = IPv4Addr(inputrouteInfo.IPv4Addr)
+				routeInfo.IPv6Addr = IPv6Addr(inputrouteInfo.IPv6Addr)
+				routeInfo.PortNumber = inputrouteInfo.PortNumber
+
+				routeToLocs.RouteInfo = routeInfo
+				afRoutReq.RouteToLocs[i] = routeToLocs
+
+			}
+
+			//SpVal
+			if inputAfRoutReq.SpVal != nil {
+				inputSpVal := inputAfRoutReq.SpVal
+				var spVal SpatialValidity
+
+				spVal.PresenceInfoList = make(map[string]PresenceInfo)
+
+				for _, inputPresenceInfoList := range inputSpVal.PresenceInfoList {
+					var presenceInfoList PresenceInfo
+
+					presenceInfoList.PraID = inputPresenceInfoList.PraID
+					presenceInfoList.PresenceState = PresenceState(inputPresenceInfoList.PresenceState)
+
+					//TrackingAreaList
+					presenceInfoList.TrackingAreaList = make([]Tai, len(inputPresenceInfoList.TrackingAreaList))
+					for i, inputTai := range inputPresenceInfoList.TrackingAreaList {
+						var tai Tai
+
+						tai.PlmnID = PlmnID(inputTai.PlmnID)
+						tai.Tac = inputTai.Tac
+
+						presenceInfoList.TrackingAreaList[i] = tai
+					}
+
+					//EcgiList
+					presenceInfoList.EcgiList = make([]Ecgi, len(inputPresenceInfoList.EcgiList))
+					for i, inputEcgi := range inputPresenceInfoList.EcgiList {
+						var ecgi Ecgi
+
+						ecgi.PlmnID = PlmnID(inputEcgi.PlmnID)
+						ecgi.EutraCellID = inputEcgi.EutraCellID
+
+						presenceInfoList.EcgiList[i] = ecgi
+					}
+
+					//NcgiList
+					presenceInfoList.NcgiList = make([]Ncgi, len(inputPresenceInfoList.NcgiList))
+					for i, inputNcgi := range inputPresenceInfoList.NcgiList {
+						var ncgi Ncgi
+
+						ncgi.PlmnID = PlmnID(inputNcgi.PlmnID)
+						ncgi.NrCellID = inputNcgi.NrCellID
+
+						presenceInfoList.NcgiList[i] = ncgi
+					}
+
+					//GlobalRanNodeIDList
+					presenceInfoList.GlobalRanNodeIDList =
+						make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+					for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
+						var globalRanNodeID GlobalRanNodeID
+
+						globalRanNodeID.N3IwfID = inputGlobalRanNodeID.N3IwfID
+						globalRanNodeID.NgeNbID = inputGlobalRanNodeID.NgeNbID
+
+						//PlmnID
+						plmnID := PlmnID(*inputGlobalRanNodeID.PlmnID)
+						globalRanNodeID.PlmnID = &plmnID
+
+						//GnbID
+						gnbID := GnbID(*inputGlobalRanNodeID.GnbID)
+						globalRanNodeID.GnbID = &gnbID
+
+						presenceInfoList.GlobalRanNodeIDList[i] = globalRanNodeID
+					}
+
+					spVal.PresenceInfoList[string(presenceInfoList.PresenceState)] = presenceInfoList
+				}
+				afRoutReq.SpVal = &spVal
+			}
 
 			//TempVals
 			afRoutReq.TempVals = make([]TemporalValidity, len(inputAfRoutReq.TempVals))
@@ -685,16 +685,16 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 			}
 
 			//UpPathChgSub
-			//if inputAfRoutReq.UpPathChgSub != nil {
-			inputUpPathChgSub := inputAfRoutReq.UpPathChgSub
-			var upPathChgSub UpPathChgEvent
+			if inputAfRoutReq.UpPathChgSub != nil {
+				inputUpPathChgSub := inputAfRoutReq.UpPathChgSub
+				var upPathChgSub UpPathChgEvent
 
-			upPathChgSub.NotificationURI = inputUpPathChgSub.NotificationURI
-			upPathChgSub.NotifCorreID = inputUpPathChgSub.NotifCorreID
-			upPathChgSub.DnaiChgType = DNAIChangeType(inputUpPathChgSub.DnaiChgType)
+				upPathChgSub.NotificationURI = inputUpPathChgSub.NotificationURI
+				upPathChgSub.NotifCorreID = inputUpPathChgSub.NotifCorreID
+				upPathChgSub.DnaiChgType = DNAIChangeType(inputUpPathChgSub.DnaiChgType)
 
-			afRoutReq.UpPathChgSub = &upPathChgSub
-			//}
+				afRoutReq.UpPathChgSub = &upPathChgSub
+			}
 			medComponent.AfRoutReq = &afRoutReq
 		}
 
@@ -708,9 +708,9 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 		medComponent.MedType = MediaType(inputMedComponent.MedType)
 
 		//MedSubComps
-		//if inputMedComponent.MedSubComps != nil {
-		medComponent.MedSubComps = make(map[string]MediaSubComponent)
-		//}
+		if inputMedComponent.MedSubComps != nil {
+			medComponent.MedSubComps = make(map[string]MediaSubComponent)
+		}
 
 		for _, inputMedSubComponent := range inputMedComponent.MedSubComps {
 			var medSubComponent MediaSubComponent
