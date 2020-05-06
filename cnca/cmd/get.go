@@ -190,7 +190,7 @@ var pfdGetCmd = &cobra.Command{
 }
 
 //paGetCmd represents get command
-/*var paGetCmd = &cobra.Command{
+var paGetCmd = &cobra.Command{
 	Use:   "get",
 	Short: "Get an active NGC AF Application Session",
 	Args:  cobra.MaximumNArgs(1),
@@ -202,8 +202,8 @@ var pfdGetCmd = &cobra.Command{
 		}
 
 		var appSessionID string
-		//var appSession []byte
-		//var err error
+		var appSession []byte
+		var err error
 
 		appSessionID = args[0]
 
@@ -214,6 +214,9 @@ var pfdGetCmd = &cobra.Command{
 				return
 				if string(appSession) == "[]" {
 					appSession = []byte("none")
+				} else {
+					fmt.Printf("App session context Data: %s\n%s",
+						appSessionID, string(appSession))
 				}
 			}
 		} else {
@@ -221,7 +224,7 @@ var pfdGetCmd = &cobra.Command{
 		}
 
 	},
-}*/
+}
 
 func init() {
 
@@ -261,17 +264,17 @@ Flags:
   -h, --help   help
 `
 
-	/*	const paHelp = `Get an active NGC AF Application Session
+	const paHelp = `Get an active NGC AF Application Session
 
-		Usage:
-		  cnca policy-authorization get <appSession-id>
+Usage:
+  cnca policy-authorization get <appSession-id>
 
-		Example:
-		   cnca policy-authorization get <appSession-id>
+Example:
+  cnca policy-authorization get <appSession-id>
 
-		Flags:
-		  -h, --help   help
-		`*/
+Flags:
+  -h, --help   help
+`
 
 	// add `get` command
 	cncaCmd.AddCommand(getCmd)
@@ -281,7 +284,7 @@ Flags:
 	pfdCmd.AddCommand(pfdGetCmd)
 	pfdGetCmd.SetHelpTemplate(pfdHelp)
 
-	/*	//add pa `get` command
-		paCmd.AddCommand(paGetCmd)
-		paGetCmd.SetHelpTemplate(paHelp)*/
+	//add pa `get` command
+	paCmd.AddCommand(paGetCmd)
+	paGetCmd.SetHelpTemplate(paHelp)
 }

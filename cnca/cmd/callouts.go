@@ -598,7 +598,7 @@ func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
 	return appSessionRespData, appSessionLoc, nil
 }
 
-func AFGetPaAppSession(appSessionID string) ([]byte, error) {
+/*func AFGetPaAppSession(appSessionID string) ([]byte, error) {
 	var appSession []byte
 	var req *http.Request
 	var err error
@@ -682,7 +682,7 @@ func AFDeletePaAppSession(appSessionID string) error {
 	return nil
 }
 
-/*func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, string, error) {
+func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, string, error) {
 	var appSession []byte
 	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/" + "events-subscription"
 
@@ -707,7 +707,7 @@ func AFDeletePaAppSession(appSessionID string) error {
 		if err != nil {
 			return nil, err
 		}
-
+	}
 	if resp.StatusCode == http.StatusInternalServerError {
 		return appSession, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
@@ -716,21 +716,21 @@ func AFDeletePaAppSession(appSessionID string) error {
 
 func AFPaEventUnsubscribe(appSessionID string) error {
 
-        url := getNgcAFPaServiceURL() + "/" + appSessionID + "/events-subscription"
+	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/events-subscription"
 
-        req, err := http.NewRequest("DELETE", url, nil)
-        if err != nil {
-                return err
-        }
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return err
+	}
 
-        resp, err := client.Do(req)
-        if err != nil {
-                return err
-        }
-        defer resp.Body.Close()
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
 
-        if resp.StatusCode != http.StatusNoContent {
-                return fmt.Errorf("HTTP failure: %d", resp.StatusCode)
-        }
-        return nil
-} */
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("HTTP failure: %d", resp.StatusCode)
+	}
+	return nil
+}*/

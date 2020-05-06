@@ -195,22 +195,33 @@ var paApplyCmd = &cobra.Command{
 			return
 		}
 
-		//fmt.Printf("After Unmarshall: \n%+v\n", s)
-
 		paAscReqData := getPaAscReqData(s)
+		asc := AppSessionContext{}
+		asc.AscReqData = &paAscReqData
 
-		var appSession []byte
-		appSession, err = json.Marshal(paAscReqData)
+		appSession, err := json.Marshal(asc)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		fmt.Printf("\n\n########appSession Data########\n\n")
-		fmt.Println(string(appSession))
-
 		// create new app-session
-		/* ******TO-DO****** */
+		appSessionRespData, appLoc, err := AFCreatePaAppSession(appSession)
+		if err != nil {
+			klog.Info(err)
+			if err.Error() == "HTTP failure: 500" && appSessionRespData != nil {
+				//print response structure in yaml format
+			}
+			return
+		}
+
+		appSessionID := getappSessionIDFromURL(appLoc)
+		fmt.Printf("appSessionID: %s\n", appSessionID)
+
+		if appSessionRespData != nil {
+			//print success response structure in yaml format
+			printAscData(appSessionRespData)
+		}
 
 	},
 }
@@ -376,6 +387,16 @@ func printPdfTransStatus(pfdTransData []byte, transURI string) {
 	}
 }
 
+func getappSessionIDFromURL(appLoc string) string {
+	appSessionLoc := strings.Split(appLoc, "/")
+	for index, str := range appSessionLoc {
+		if str == "app-sessions" {
+			return appSessionLoc[index+1]
+		}
+	}
+	return ""
+}
+
 func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 	var paAscReqData AppSessionContextReqData
 
@@ -476,8 +497,7 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 				}
 
 				//GlobalRanNodeIDList
-				presenceInfoList.GlobalRanNodeIDList =
-					make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+				presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
 				for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 					var globalRanNodeID GlobalRanNodeID
 
@@ -526,7 +546,6 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 	}
 
 	//EvSubsc
-
 	if inputPaAscReqData.Policy.EvSubsc != nil {
 		inputEvSubsc := inputPaAscReqData.Policy.EvSubsc
 
@@ -649,8 +668,7 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 					}
 
 					//GlobalRanNodeIDList
-					presenceInfoList.GlobalRanNodeIDList =
-						make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+					presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
 					for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 						var globalRanNodeID GlobalRanNodeID
 
@@ -746,4 +764,17 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 		paAscReqData.MedComponents[strconv.Itoa(int(medComponent.MedCompN))] = medComponent
 	}
 	return paAscReqData
+}
+
+func printAscData(paAscData []byte) {
+	paAppSession := AppSessionContext{}
+	if err = json.Unmarshal(paAscData, &paAppSession); err != nil {
+		fmt.Println(err)
+		return
+	}
+	//fmt.Println(paAppSession)
+
+	asc, err := yaml.Marshal(paAppSession)
+	fmt.Println(string(asc))
+
 }
