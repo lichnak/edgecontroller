@@ -7,11 +7,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	//"io/ioutil"
 	//"strconv"
-	"strings"
+	//"strings"
 
-	y2j "github.com/ghodss/yaml"
+	//y2j "github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 	"k8s.io/klog"
@@ -44,7 +44,7 @@ var paSubscribeCmd = &cobra.Command{
 
 		if args[0] != "" {
 			var evSubscRespData []byte
-			appSessionID := args[0]
+			//appSessionID := args[0]
 			var s AFEventsSubscReqData
 			if err = yaml.Unmarshal(data, &s); err != nil {
 				fmt.Println(err)
@@ -59,7 +59,7 @@ var paSubscribeCmd = &cobra.Command{
 				fmt.Println(err)
 				return
 			}
-			evSubscRespData, err = AFSubscribePaAppSession(args[0], evSubsc)
+			evSubscRespData, _, err = AFPaEventSubscribe(args[0], evSubsc)
 			if err != nil {
 				klog.Info(err)
 				if err.Error() == "HTTP failure: 500" && evSubscRespData != nil {
@@ -100,8 +100,8 @@ Flags:
 func getpaEvSubscReqData(inputPaEvSubscReqData AFEventsSubscReqData) EventsSubscReqData {
 	var paEvSubscReqData EventsSubscReqData
 
-	paEvSubscReqData.Events = make([]EventSubscription, len(inputPaEvSubscReqData.Events))
-	for i, inputEvents := range inputPaEvSubscReqData.Events {
+	paEvSubscReqData.Events = make([]EventSubscription, len(inputPaEvSubscReqData.Policy.Events))
+	for i, inputEvents := range inputPaEvSubscReqData.Policy.Events {
 		var events EventSubscription
 
 		events.Event = Event(inputEvents.Event)
@@ -111,12 +111,12 @@ func getpaEvSubscReqData(inputPaEvSubscReqData AFEventsSubscReqData) EventsSubsc
 	}
 
 	//NotifURI
-	paEvSubscReqData.NotifURI = inputEvSubsc.NotifURI
+	paEvSubscReqData.NotifURI = inputPaEvSubscReqData.Policy.NotifURI
 
 	//UsgThres
-	if inputPaEvSubscReqData.UsgThres != nil {
-		usgThres := UsageThreshold(*inputPaEvSubscReqData.UsgThres)
+	if inputPaEvSubscReqData.Policy.UsgThres != nil {
+		usgThres := UsageThreshold(*inputPaEvSubscReqData.Policy.UsgThres)
 		paEvSubscReqData.UsgThres = &usgThres
 	}
-	paEvSubscReqData.EvSubsc = &evSubsc
+	return paEvSubscReqData
 }

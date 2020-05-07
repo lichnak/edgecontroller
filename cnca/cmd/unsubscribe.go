@@ -24,7 +24,7 @@ var paUnsubscribeCmd = &cobra.Command{
 		}
 
 		if args[0] != "" {
-			err := AFUnsubscribePaAppSession(args[0])
+			err := AFPaEventUnsubscribe(args[0])
 			if err != nil {
 				klog.Info(err)
 				return

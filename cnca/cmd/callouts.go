@@ -14,10 +14,10 @@ import (
 // Connectivity constants
 const (
 	NgcOAMServiceEndpoint      = "http://127.0.0.1:30070/ngcoam/v1/af"
-	NgcAFServiceEndpoint       = "http://127.0.0.1:30050/af/v1"
+	NgcAFServiceEndpoint       = "http://localhost:8050/af/v1"
 	LteOAMServiceEndpoint      = "http://127.0.0.1:8082"
 	NgcOAMServiceHTTP2Endpoint = "https://127.0.0.1:30070/ngcoam/v1/af"
-	NgcAFServiceHTTP2Endpoint  = "https://127.0.0.1:30050/af/v1"
+	NgcAFServiceHTTP2Endpoint  = "https://localhost:8050/af/v1"
 	LteOAMServiceHTTP2Endpoint = "https://127.0.0.1:8082"
 )
 
@@ -47,9 +47,9 @@ func getNgcAFPfdServiceURL() string {
 
 func getNgcAFPaServiceURL() string {
 	if UseHTTPProtocol == HTTP2 {
-		return NgcAFServiceHTTP2Endpoint + "policy-authorization/app-sessions"
+		return NgcAFServiceHTTP2Endpoint + "/policy-authorization/app-sessions"
 	}
-	return NgcAFServiceEndpoint + "policy-authorization/app-sessions"
+	return NgcAFServiceEndpoint + "/policy-authorization/app-sessions"
 }
 
 func getLteOAMServiceURL() string {
@@ -598,7 +598,7 @@ func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
 	return appSessionRespData, appSessionLoc, nil
 }
 
-/*func AFGetPaAppSession(appSessionID string) ([]byte, error) {
+func AFGetPaAppSession(appSessionID string) ([]byte, error) {
 	var appSession []byte
 	var req *http.Request
 	var err error
@@ -688,30 +688,30 @@ func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, str
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(evSubscReqData))
 	if err != nil {
-		return nil, err
+		return nil, " ", err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusInternalServerError {
-		return nil, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
+		return nil, "", fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 
 	if resp.Body != nil {
 		appSession, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return nil, err
+			return nil, "", err
 		}
 	}
 	if resp.StatusCode == http.StatusInternalServerError {
-		return appSession, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
+		return appSession, "", fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
-	return appSession, nil
+	return appSession, "", nil
 }
 
 func AFPaEventUnsubscribe(appSessionID string) error {
@@ -733,4 +733,4 @@ func AFPaEventUnsubscribe(appSessionID string) error {
 		return fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 	return nil
-}*/
+}

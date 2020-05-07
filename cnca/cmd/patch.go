@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
 	y2j "github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
@@ -246,7 +247,7 @@ var paPatchCmd = &cobra.Command{
 
 		if args[0] != "" {
 			//Patch app-session data
-			appSessionContext, err := AFPatchPaAppSession(appSession, args[0])
+			appSessionContext, err := AFPatchPaAppSession(args[0], appSession)
 			if err != nil {
 
 			}

@@ -768,13 +768,17 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 
 func printAscData(paAscData []byte) {
 	paAppSession := AppSessionContext{}
-	if err = json.Unmarshal(paAscData, &paAppSession); err != nil {
+	if err := json.Unmarshal(paAscData, &paAppSession); err != nil {
 		fmt.Println(err)
 		return
 	}
 	//fmt.Println(paAppSession)
 
 	asc, err := yaml.Marshal(paAppSession)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(string(asc))
 
 }
