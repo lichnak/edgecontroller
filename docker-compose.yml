@@ -56,7 +56,7 @@ services:
     image: cups:latest
     read_only: true
     build:
-      context: ./ui/cups
+      context: ../epcforedge/ui/cups
       args:
         REACT_APP_CUPS_API: "${REACT_APP_CUPS_API}"
         LANDING_UI_URL: "${LANDING_UI_URL}"
