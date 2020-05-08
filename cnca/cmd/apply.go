@@ -209,9 +209,6 @@ var paApplyCmd = &cobra.Command{
 		appSessionRespData, appLoc, err := AFCreatePaAppSession(appSession)
 		if err != nil {
 			klog.Info(err)
-			if err.Error() == "HTTP failure: 500" && appSessionRespData != nil {
-				//print response structure in yaml format
-			}
 			return
 		}
 
@@ -497,7 +494,8 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 				}
 
 				//GlobalRanNodeIDList
-				presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+				presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID,
+					len(inputPresenceInfoList.GlobalRanNodeIDList))
 				for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 					var globalRanNodeID GlobalRanNodeID
 
@@ -668,7 +666,8 @@ func getPaAscReqData(inputPaAscReqData AFAscReqData) AppSessionContextReqData {
 					}
 
 					//GlobalRanNodeIDList
-					presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+					presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID,
+						len(inputPresenceInfoList.GlobalRanNodeIDList))
 					for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 						var globalRanNodeID GlobalRanNodeID
 

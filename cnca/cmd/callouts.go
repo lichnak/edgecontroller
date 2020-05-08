@@ -682,36 +682,36 @@ func AFDeletePaAppSession(appSessionID string) error {
 	return nil
 }
 
-func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, string, error) {
+func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, error) {
 	var appSession []byte
 	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/" + "events-subscription"
 
 	req, err := http.NewRequest("PUT", url, bytes.NewReader(evSubscReqData))
 	if err != nil {
-		return nil, " ", err
+		return nil, err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK &&
 		resp.StatusCode != http.StatusInternalServerError {
-		return nil, "", fmt.Errorf("HTTP failure: %d", resp.StatusCode)
+		return nil, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 
 	if resp.Body != nil {
 		appSession, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return nil, "", err
+			return nil, err
 		}
 	}
 	if resp.StatusCode == http.StatusInternalServerError {
-		return appSession, "", fmt.Errorf("HTTP failure: %d", resp.StatusCode)
+		return appSession, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
-	return appSession, "", nil
+	return appSession, nil
 }
 
 func AFPaEventUnsubscribe(appSessionID string) error {

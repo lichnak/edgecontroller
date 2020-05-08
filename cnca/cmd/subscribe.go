@@ -11,7 +11,7 @@ import (
 	//"strconv"
 	//"strings"
 
-	//y2j "github.com/ghodss/yaml"
+	y2j "github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
 	"k8s.io/klog"
@@ -44,7 +44,6 @@ var paSubscribeCmd = &cobra.Command{
 
 		if args[0] != "" {
 			var evSubscRespData []byte
-			//appSessionID := args[0]
 			var s AFEventsSubscReqData
 			if err = yaml.Unmarshal(data, &s); err != nil {
 				fmt.Println(err)
@@ -59,15 +58,17 @@ var paSubscribeCmd = &cobra.Command{
 				fmt.Println(err)
 				return
 			}
-			evSubscRespData, _, err = AFPaEventSubscribe(args[0], evSubsc)
+			evSubscRespData, err = AFPaEventSubscribe(args[0], evSubsc)
 			if err != nil {
 				klog.Info(err)
-				if err.Error() == "HTTP failure: 500" && evSubscRespData != nil {
-					//print response data EventsSubscReqData and EventsNotification
-				}
 				return
 			}
-			fmt.Printf("App Session %s patched\n", args[0])
+			evSubscRespData, err = y2j.JSONToYAML(evSubscRespData)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Printf("App-Session %s subscription successful\n %s", args[0], string(evSubscRespData))
 			return
 		}
 		fmt.Println(errors.New("Invalid input(s)"))

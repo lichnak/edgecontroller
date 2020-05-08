@@ -29,6 +29,8 @@ var paUnsubscribeCmd = &cobra.Command{
 				klog.Info(err)
 				return
 			}
+			fmt.Printf("Subscription to events of app session %s removed\n", args[0])
+			return
 		}
 
 		fmt.Println(errors.New("Invalid input(s)"))

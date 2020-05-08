@@ -212,17 +212,22 @@ var paGetCmd = &cobra.Command{
 			if err != nil {
 				klog.Info(err)
 				return
-				if string(appSession) == "[]" {
-					appSession = []byte("none")
-				} else {
-					fmt.Printf("App session context Data: %s\n%s",
-						appSessionID, string(appSession))
-				}
 			}
-		} else {
-			fmt.Println(errors.New("Invalid input(s)"))
-		}
 
+			if string(appSession) == "[]" {
+				appSession = []byte("none")
+			}
+
+			appSession, err = y2j.JSONToYAML(appSession)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			fmt.Printf("App session context Data: %s\n%s", appSessionID, string(appSession))
+			return
+		}
+		fmt.Println(errors.New("Invalid input(s)"))
 	},
 }
 

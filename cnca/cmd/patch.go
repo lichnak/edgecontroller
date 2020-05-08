@@ -249,10 +249,18 @@ var paPatchCmd = &cobra.Command{
 			//Patch app-session data
 			appSessionContext, err := AFPatchPaAppSession(args[0], appSession)
 			if err != nil {
-
+				klog.Info(err)
+				return
 			}
-			fmt.Printf("App-Session %s was updated : \n %s", string(appSessionContext))
+			appSessionContext, err = y2j.JSONToYAML(appSessionContext)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			fmt.Printf("App-Session %s was updated : \n %s", args[0], string(appSessionContext))
+			return
 		}
+		fmt.Println(errors.New("Invalid input(s)"))
 	},
 }
 
@@ -477,7 +485,8 @@ func getPaAscUpdateData(inputPaAscUpdateData AFAscUpdateData) AppSessionContextU
 					presenceInfoList.NcgiList[i] = ncgi
 				}
 				//GlobalRanNodeIDList
-				presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+				presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID,
+					len(inputPresenceInfoList.GlobalRanNodeIDList))
 				for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 					var globalRanNodeID GlobalRanNodeID
 
@@ -647,7 +656,8 @@ func getPaAscUpdateData(inputPaAscUpdateData AFAscUpdateData) AppSessionContextU
 					}
 
 					//GlobalRanNodeIDList
-					presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID, len(inputPresenceInfoList.GlobalRanNodeIDList))
+					presenceInfoList.GlobalRanNodeIDList = make([]GlobalRanNodeID,
+						len(inputPresenceInfoList.GlobalRanNodeIDList))
 					for i, inputGlobalRanNodeID := range inputPresenceInfoList.GlobalRanNodeIDList {
 						var globalRanNodeID GlobalRanNodeID
 
