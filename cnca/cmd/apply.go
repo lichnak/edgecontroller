@@ -212,13 +212,13 @@ var paApplyCmd = &cobra.Command{
 			return
 		}
 
-		appSessionID := getappSessionIDFromURL(appLoc)
-		fmt.Printf("appSessionID: %s\n", appSessionID)
-
 		if appSessionRespData != nil {
 			//print success response structure in yaml format
 			printAscData(appSessionRespData)
 		}
+
+		appSessionID := getappSessionIDFromURL(appLoc)
+		fmt.Printf("\nappSessionID: %s\n", appSessionID)
 
 	},
 }
@@ -771,7 +771,6 @@ func printAscData(paAscData []byte) {
 		fmt.Println(err)
 		return
 	}
-	//fmt.Println(paAppSession)
 
 	asc, err := yaml.Marshal(paAppSession)
 	if err != nil {

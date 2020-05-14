@@ -270,17 +270,21 @@ type AFPfdData struct {
 	} `yaml:"policy"`
 }
 
-//AFAscReqData describes Application session context request data
+//AFAscReqData describes an individual Application Session Context request data
 type AFAscReqData struct {
 	H      Header
 	Policy struct {
+		// Contains an AF application identifier.
 		AfAppID   string `yaml:"afAppId,omitempty"`
 		AfRoutReq *struct {
 			AppReloc    bool `yaml:"appReloc,omitempty"`
 			RouteToLocs []struct {
-				DNAI        string `yaml:"dnai"`
+				// Data network access identifier
+				DNAI string `yaml:"dnai"`
+				// Dnai route profile identifier
 				RouteProfID string `yaml:"routeProfId,omitempty"`
-				RouteInfo   struct {
+				// Additional route information about the route to Dnai
+				RouteInfo struct {
 					IPv4Addr   string `yaml:"ipv4Addr,omitempty"`
 					IPv6Addr   string `yaml:"ipv6Addr,omitempty"`
 					PortNumber int32  `yaml:"portNumber"`
@@ -288,7 +292,13 @@ type AFAscReqData struct {
 			} `yaml:"routeToLocs,omitempty"`
 			SpVal *struct {
 				PresenceInfoList []struct {
-					PraID            string `yaml:"praId,omitempty"`
+					PraID string `yaml:"praId,omitempty"`
+					/* Possible Values for PresenceState are:
+					 * 	IN_AREA
+					 * 	OUT_OF_AREA
+					 * 	UNKNOWN
+					 * 	INACTIVE
+					 */
 					PresenceState    string `yaml:"presenceState,omitempty"`
 					TrackingAreaList []struct {
 						PlmnID struct {
@@ -326,37 +336,55 @@ type AFAscReqData struct {
 				} `yaml:"presenceInfoList"`
 			} `yaml:"spVal,omitempty"`
 			TempVals []struct {
+				// string with format \"date-time\" as defined in OpenAPI.
 				StartTime string `yaml:"startTime,omitempty"`
-				StopTime  string `yaml:"stopTime,omitempty"`
+				// string with format \"date-time\" as defined in OpenAPI.
+				StopTime string `yaml:"stopTime,omitempty"`
 			} `yaml:"tempVals,omitempty"`
 			UpPathChgSub *struct {
+				// string providing an URI formatted according to IETF RFC 3986.
 				NotificationURI string `yaml:"notificationUri"`
-				NotifCorreID    string `yaml:"notifCorreId"`
-				DnaiChgType     string `yaml:"dnaiChgType"`
+				/*
+				 * It is used to set the value of Notification Correlation ID in the
+				 * notification sent by the SMF.
+				 */
+				NotifCorreID string `yaml:"notifCorreId"`
+				DnaiChgType  string `yaml:"dnaiChgType"`
 			} `yaml:"upPathChgSub,omitempty"`
 		} `yaml:"afRoutReq,omitempty"`
-		AspID    string `yaml:"aspId,omitempty"`
+		// Contains an identity of an application service provider.
+		AspID string `yaml:"aspId,omitempty"`
+		/*
+				         * string identifying a BDT Reference ID as defined in subclause
+			        	 * 5.3.3 of 3GPP TS 29.154.
+		*/
 		BdtRefID string `yaml:"bdtRefId,omitempty"`
-		Dnn      string `yaml:"dnn,omitempty"`
-		EvSubsc  *struct {
+		// Identifies data network name
+		Dnn     string `yaml:"dnn,omitempty"`
+		EvSubsc *struct {
 			Events []struct {
 				Event       string `yaml:"event"`
 				NotifMethod string `yaml:"notifMethod,omitempty"`
 			} `yaml:"events"`
+			// string providing a URI formatted according to IETF RFC 3986.
 			NotifURI string `yaml:"notifUri,omitempty"`
 			UsgThres *struct {
-				Duration       int32 `yaml:"duration,omitempty"`
-				TotalVolume    int64 `yaml:"totalVolume,omitempty"`
+				// Unsigned integer identifying a period of time in units of seconds.
+				Duration int32 `yaml:"duration,omitempty"`
+				// Unsigned integer identifying a volume in units of bytes.
+				TotalVolume int64 `yaml:"totalVolume,omitempty"`
+				// Unsigned integer identifying a volume in units of bytes.
 				DownlinkVolume int64 `yaml:"downlinkVolume,omitempty"`
-				UplinkVolume   int64 `yaml:"uplinkVolume,omitempty"`
+				// Unsigned integer identifying a volume in units of bytes.
+				UplinkVolume int64 `yaml:"uplinkVolume,omitempty"`
 			} `yaml:"usgThres,omitempty"`
 		} `yaml:"evSubsc,omitempty"`
 
 		MedComponents []struct {
-			ContVer  int32  `yaml:"contVer,omitempty"`
-			MedCompN int32  `yaml:"medCompN"`
-			AfAppID  string `yaml:"afAppId,omitempty"`
-
+			ContVer  int32 `yaml:"contVer,omitempty"`
+			MedCompN int32 `yaml:"medCompN"`
+			// Contains an AF application identifier.
+			AfAppID   string `yaml:"afAppId,omitempty"`
 			AfRoutReq *struct {
 				AppReloc    bool `yaml:"appReloc,omitempty"`
 				RouteToLocs []struct {
@@ -369,7 +397,6 @@ type AFAscReqData struct {
 					} `yaml:"routeInfo,omitempty"`
 				} `yaml:"routeToLocs,omitempty"`
 				SpVal *struct {
-					//PresenceInfoList map[string]PresenceInfo  `yaml:"presenceInfoList"`
 					PresenceInfoList []struct {
 						PraID            string `yaml:"praId,omitempty"`
 						PresenceState    string `yaml:"presenceState,omitempty"`
@@ -418,7 +445,7 @@ type AFAscReqData struct {
 					DnaiChgType     string `yaml:"dnaiChgType"`
 				} `yaml:"upPathChgSub,omitempty"`
 			} `yaml:"afRoutReq,omitempty"`
-
+			// Represents the content version of some content.
 			Codecs  []string `yaml:"codecs,omitempty"`
 			FStatus string   `yaml:"fStatus,omitempty"`
 			MarBwDl string   `yaml:"marBwDl,omitempty"`
@@ -427,43 +454,118 @@ type AFAscReqData struct {
 			//MedSubComps map[string]MediaSubComponent `yaml:"medSubComps,omitempty"`
 			MedSubComps []struct {
 				EthfDescs []struct {
-					DestMacAddr   string   `yaml:"destMacAddr,omitempty"`
-					EthType       string   `yaml:"ethType"`
-					FDesc         string   `yaml:"fDesc,omitempty"`
-					FDir          string   `yaml:"fDir,omitempty"`
-					SourceMacAddr string   `yaml:"sourceMacAddr,omitempty"`
-					VLANTags      []string `yaml:"vlanTags,omitempty"`
+					// Destination mac address
+					DestMacAddr string `yaml:"destMacAddr,omitempty"`
+					// EtherType number
+					EthType string `yaml:"ethType"`
+					// Defines a packet filter of an IP flow.
+					FDesc string `yaml:"fDesc,omitempty"`
+					// Possible values are DOWNLINK - The corresponding filter
+					// applies for traffic to the UE.
+					// UPLINK - The corresponding filter applies for
+					// traffic from the UE.
+					// BIDIRECTIONAL The corresponding filter applies for
+					// traffic both to and from the UE.
+					// UNSPECIFIED - The corresponding filter applies for traffic
+					// to the UE (downlink), but has no specific direction declared.
+					// The service data flow detection shall apply the filter for
+					// uplink traffic as if the filter was bidirectional.
+					FDir string `yaml:"fDir,omitempty"`
+					// Source mac address
+					SourceMacAddr string `yaml:"sourceMacAddr,omitempty"`
+					// Vlan tags
+					VLANTags []string `yaml:"vlanTags,omitempty"`
 				} `yaml:"ethfDescs,omitempty"`
-				FNum      int32    `yaml:"fNum"`
-				FDescs    []string `yaml:"fDescs,omitempty"`
-				FStatus   string   `yaml:"fStatus,omitempty"`
-				MarBwDl   string   `yaml:"marBwDl,omitempty"`
-				MarBwUl   string   `yaml:"marBwUl,omitempty"`
-				TosTrCl   string   `yaml:"tosTrCl,omitempty"`
-				FlowUsage string   `yaml:"flowUsage,omitempty"`
+				FNum   int32    `yaml:"fNum"`
+				FDescs []string `yaml:"fDescs,omitempty"`
+				// Possible values of FStatus are :
+				//	ENABLED-UPLINK
+				//	ENABLED-DOWNLINK
+				//	ENABLED
+				//	DISABLED
+				//	REMOVED
+				FStatus string `yaml:"fStatus,omitempty"`
+				MarBwDl string `yaml:"marBwDl,omitempty"`
+				MarBwUl string `yaml:"marBwUl,omitempty"`
+				/*
+				 * 2-octet string, where each octet is encoded in hexadecimal
+				 * representation. The first octet contains the IPv4 Type-of-Service or
+				 * the IPv6 Traffic-Class field and the second octet contains the
+				 * ToS/Traffic Class mask field.
+				 */
+				TosTrCl string `yaml:"tosTrCl,omitempty"`
+				/* Possible values of FlowUsage :
+				 *	NO_INFO
+				 *	RTCP
+				 */
+				FlowUsage string `yaml:"flowUsage,omitempty"`
 			} `yaml:"medSubComps,omitempty"`
 
 			MedType string `yaml:"medType,omitempty"`
 			MirBwDl string `yaml:"mirBwDl,omitempty"`
 			MirBwUl string `yaml:"mirBwUl,omitempty"`
+			/* Possible values for ResPrio are:
+			 * 	PRIO_1
+			 * 	PRIO_2
+			 * 	PRIO_3
+			 * 	PRIO_4
+			 * 	PRIO_5
+			 * 	PRIO_6
+			 * 	PRIO_7
+			 * 	PRIO_8
+			 * 	PRIO_9
+			 * 	PRIO_10
+			 * 	PRIO_11
+			 * 	PRIO_12
+			 * 	PRIO_13
+			 * 	PRIO_14
+			 * 	PRIO_15
+			 * 	PRIO_16
+			 */
 			ResPrio string `yaml:"resPrio,omitempty"`
 		} `yaml:"medComponents,omitempty"`
 
-		IPDomain  string `yaml:"ipDomain,omitempty"`
-		MpsID     string `yaml:"mpsId,omitempty"`
-		NotifURI  string `yaml:"notifUri"`
+		IPDomain string `yaml:"ipDomain,omitempty"`
+		// indication of MPS service request
+		MpsID    string `yaml:"mpsId,omitempty"`
+		NotifURI string `yaml:"notifUri"`
+		// Network slice identifier (SNSSAI)
 		SliceInfo *struct {
 			SST int32  `yaml:"sst"`
 			SD  string `yaml:"sd,omitempty"`
 		} `yaml:"sliceInfo,omitempty"`
-		SponID     string `yaml:"sponId,omitempty"`
+		// Contains an identity of a sponsor.
+		SponID string `yaml:"sponId,omitempty"`
+		/* Possible values for SponStatus are:
+		 * 	SPONSOR_ENABLED
+		 *	SPONSOR_DISABLED
+		 */
 		SponStatus string `yaml:"sponStatus,omitempty"`
-		Supi       string `yaml:"supi,omitempty"`
-		Gpsi       string `yaml:"gpsi,omitempty"`
-		SuppFeat   string `yaml:"suppFeat"`
-		UeIpv4     string `yaml:"ueIpv4,omitempty"`
-		UeIpv6     string `yaml:"ueIpv6,omitempty"`
-		UeMac      string `yaml:"ueMac,omitempty"`
+		// Supi
+		Supi string `yaml:"supi,omitempty"`
+		// Gpsi
+		Gpsi string `yaml:"gpsi,omitempty"`
+		/*
+				         * A string used to indicate the features supported by an API that is
+			        	 * used as defined in subclause 6.6 in 3GPP TS 29.500 [1]. The string
+				         * shall contain a bitmask indicating supported features in hexadecimal
+				         * representation. Each character in the string shall take a value of
+				         * \"0\" to \"9\" or \"A\" to \"F\" and shall represent the support of 4
+			       		 * features as described in table 5.2.2-3. The most significant
+				         * character representing the highest-numbered features shall appear
+			           	 * first in the string, and the character representing features 1 to 4
+			         	 * shall appear last in the string. The list of features and their
+			         	 * numbering (starting with 1) are defined separately for each API.
+			         	 * Possible features for traffic influencing are
+			         	 * Notification_websocket(1), Notification_test_event(2)
+		*/
+		SuppFeat string `yaml:"suppFeat"`
+		// string identifying a Ipv4 address formatted in the \"dotted decimal\" notation as defined in IETF RFC 1166.
+		UeIpv4 string `yaml:"ueIpv4,omitempty"`
+		// string identifying a Ipv6 address formatted according to clause 4 in IETF RFC 5952.
+		UeIpv6 string `yaml:"ueIpv6,omitempty"`
+		// string identifying mac address of UE
+		UeMac string `yaml:"ueMac,omitempty"`
 	} `yaml:"policy"`
 }
 

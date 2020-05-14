@@ -561,6 +561,7 @@ func AFDeletePfdApplication(transID string, appID string) error {
 	return nil
 }
 
+// AFCreatePaAppSession creates new application session at AF
 func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
 
 	var appSessionRespData []byte
@@ -577,8 +578,7 @@ func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated &&
-		resp.StatusCode != http.StatusInternalServerError {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, "", fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 
@@ -591,13 +591,10 @@ func AFCreatePaAppSession(appSession []byte) ([]byte, string, error) {
 		}
 	}
 
-	if resp.StatusCode == http.StatusInternalServerError {
-		return appSessionRespData, appSessionLoc, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
-	}
-
 	return appSessionRespData, appSessionLoc, nil
 }
 
+// AFGetPaAppSession gets the active application session at AF
 func AFGetPaAppSession(appSessionID string) ([]byte, error) {
 	var appSession []byte
 	var req *http.Request
@@ -627,6 +624,7 @@ func AFGetPaAppSession(appSessionID string) ([]byte, error) {
 	return appSession, nil
 }
 
+// AFPatchPaAppSession update an active application session at AF
 func AFPatchPaAppSession(appSessionID string, appSession []byte) ([]byte, error) {
 
 	var appSessionResp []byte
@@ -643,8 +641,7 @@ func AFPatchPaAppSession(appSessionID string, appSession []byte) ([]byte, error)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK &&
-		resp.StatusCode != http.StatusInternalServerError {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 
@@ -655,12 +652,10 @@ func AFPatchPaAppSession(appSessionID string, appSession []byte) ([]byte, error)
 		}
 	}
 
-	if resp.StatusCode == http.StatusInternalServerError {
-		return appSessionResp, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
-	}
 	return appSessionResp, nil
 }
 
+// AFPatchPaAppSession delete an active application session at AF
 func AFDeletePaAppSession(appSessionID string) error {
 
 	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/delete"
@@ -682,6 +677,7 @@ func AFDeletePaAppSession(appSessionID string) error {
 	return nil
 }
 
+// AFPaEventSubscribe create or modify event subscription sub resource at AF
 func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, error) {
 	var appSession []byte
 	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/" + "events-subscription"
@@ -697,8 +693,7 @@ func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusCreated &&
-		resp.StatusCode != http.StatusInternalServerError {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}
 
@@ -708,12 +703,10 @@ func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, err
 			return nil, err
 		}
 	}
-	if resp.StatusCode == http.StatusInternalServerError {
-		return appSession, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
-	}
 	return appSession, nil
 }
 
+//AFPaEventUnsubscribe deletes an active event subscription sub resource at AF
 func AFPaEventUnsubscribe(appSessionID string) error {
 
 	url := getNgcAFPaServiceURL() + "/" + appSessionID + "/events-subscription"

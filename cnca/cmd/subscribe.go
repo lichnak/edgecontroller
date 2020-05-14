@@ -115,17 +115,3 @@ func getpaEvSubscReqData(inputPaEvSubscReqData AFEventsSubscReqData) EventsSubsc
 	}
 	return paEvSubscReqData
 }
-
-/*func printRespData(evSubscRespData []byte) {
-        paAppSession := EventsSubscReqData {}
-        if err := json.Unmarshal(evSubscRespData, &paAppSession); err != nil {
-                fmt.Println(err)
-                return
-        }
-        asc, err := yaml.Marshal(paAppSession)
-        if err!= nil {
-                fmt.Println(err)
-                return
-        }
-        fmt.Println(string(asc))
-}*/
