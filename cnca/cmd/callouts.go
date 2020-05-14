@@ -14,10 +14,10 @@ import (
 // Connectivity constants
 const (
 	NgcOAMServiceEndpoint      = "http://127.0.0.1:30070/ngcoam/v1/af"
-	NgcAFServiceEndpoint       = "http://localhost:8050/af/v1"
+	NgcAFServiceEndpoint       = "http://127.0.0.1:30050/af/v1"
 	LteOAMServiceEndpoint      = "http://127.0.0.1:8082"
 	NgcOAMServiceHTTP2Endpoint = "https://127.0.0.1:30070/ngcoam/v1/af"
-	NgcAFServiceHTTP2Endpoint  = "https://localhost:8050/af/v1"
+	NgcAFServiceHTTP2Endpoint  = "https://127.0.0.1:30050/af/v1"
 	LteOAMServiceHTTP2Endpoint = "https://127.0.0.1:8082"
 )
 
@@ -697,7 +697,7 @@ func AFPaEventSubscribe(appSessionID string, evSubscReqData []byte) ([]byte, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK &&
+	if resp.StatusCode != http.StatusCreated &&
 		resp.StatusCode != http.StatusInternalServerError {
 		return nil, fmt.Errorf("HTTP failure: %d", resp.StatusCode)
 	}

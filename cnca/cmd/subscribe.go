@@ -7,9 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	//"io/ioutil"
-	//"strconv"
-	//"strings"
 
 	y2j "github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
@@ -30,7 +27,6 @@ var paSubscribeCmd = &cobra.Command{
 			fmt.Println(err)
 			return
 		}
-
 		var c Header
 		if err = yaml.Unmarshal(data, &c); err != nil {
 			fmt.Println(err)
@@ -49,9 +45,7 @@ var paSubscribeCmd = &cobra.Command{
 				fmt.Println(err)
 				return
 			}
-
 			paEvSubscReqData := getpaEvSubscReqData(s)
-
 			var evSubsc []byte
 			evSubsc, err = json.Marshal(paEvSubscReqData)
 			if err != nil {
@@ -121,3 +115,17 @@ func getpaEvSubscReqData(inputPaEvSubscReqData AFEventsSubscReqData) EventsSubsc
 	}
 	return paEvSubscReqData
 }
+
+/*func printRespData(evSubscRespData []byte) {
+        paAppSession := EventsSubscReqData {}
+        if err := json.Unmarshal(evSubscRespData, &paAppSession); err != nil {
+                fmt.Println(err)
+                return
+        }
+        asc, err := yaml.Marshal(paAppSession)
+        if err!= nil {
+                fmt.Println(err)
+                return
+        }
+        fmt.Println(string(asc))
+}*/
