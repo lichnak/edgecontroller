@@ -94,6 +94,15 @@ spec:
       - name: configs
         hostPath:
           path: /etc/openness/configs
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "vcac-zone"
+                  operator: NotIn
+                  values:
+                    - "yes"
 
 ---
 apiVersion: v1
@@ -204,6 +213,15 @@ spec:
       - name: certs
         hostPath:
           path: /etc/openness/certs/edgedns
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "vcac-zone"
+                  operator: NotIn
+                  values:
+                    - "yes"
 
 ---
 apiVersion: apps/v1
