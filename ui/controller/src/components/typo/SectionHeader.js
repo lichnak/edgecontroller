@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2019-2020 Intel Corporation
 
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -8,8 +8,8 @@ import { withRouter } from 'react-router-dom';
 
 const styles = theme => ({
   sectionContainer: {
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4)
   },
   title: {
     fontWeight: 'bold'

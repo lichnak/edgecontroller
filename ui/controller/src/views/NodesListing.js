@@ -36,8 +36,8 @@ const styles = theme => ({
     fontSize: '20px',
   },
   sectionContainer: {
-    marginTop: theme.spacing.unit * 4,
-    marginBottom: theme.spacing.unit * 4
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4)
   },
   title: {
     fontWeight: 'bold',

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2019-2020 Intel Corporation
 
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -32,7 +32,7 @@ const styles = theme => ({
     paddingBottom: 500
   },
   grid: {
-    margin: `0 ${theme.spacing.unit * 2}px`
+    margin: `0 ${theme.spacing(2)}px`
   },
   smallContainer: {
     width: '60%'
@@ -57,7 +57,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.primary['A100']
   },
   paper: {
-    padding: theme.spacing.unit * 3,
+    padding: theme.spacing(3),
     textAlign: 'left',
     color: theme.palette.text.secondary
   },
