@@ -29,6 +29,8 @@ var _ = Describe("CLI tests", func() {
 	AfterEach(func() {
 		Iserv.getReturnNi = nil
 		Iserv.getReturnErr = nil
+		Iserv.attachReturnErr = nil
+		Iserv.detachReturnErr = nil
 	})
 
 	Context("start Cli without command", func() {
