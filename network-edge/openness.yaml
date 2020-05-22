@@ -83,6 +83,10 @@ spec:
           mountPath: /home/eaa/certs-sec
         - name: configs
           mountPath: /home/eaa/configs
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: certs-sec
         secret:
@@ -196,6 +200,10 @@ spec:
           mountPath: /root/certs
         - name: certgen
           mountPath: /root/certgen
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: edgednssvr
         hostPath:
@@ -285,6 +293,10 @@ spec:
           mountPath: /root/certs
         - name: certgen
           mountPath: /root/certgen
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: syslog-conf
         configMap:

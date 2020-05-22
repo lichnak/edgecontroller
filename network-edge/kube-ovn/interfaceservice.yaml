@@ -86,6 +86,10 @@ spec:
           mountPath: /root/certs
         - name: certgen
           mountPath: /root/certgen
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: configs
         hostPath:
