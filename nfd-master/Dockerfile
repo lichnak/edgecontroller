@@ -3,8 +3,8 @@
 
 FROM centos:7.6.1810 AS nfd-master
 
-RUN yum install -y openssl sudo \
-    && yum clean all
+RUN yum install -y sudo \
+	&& yum clean all
 
 FROM nfd-master
 
