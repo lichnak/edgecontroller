@@ -136,7 +136,7 @@ class AddAppFormDialog extends Component {
 
     const { name, version, type, vendor, description, cores, memory, ports, source, epafeatures } = this.state;
 
-    if (source.split(0,5) !== "https") {
+    if (source.substring(0,5) !== "https") {
       this.setState({ loading: false });
       this.props.enqueueSnackbar(`Failed to add app: need https source`, { variant: `error` });
       return;
