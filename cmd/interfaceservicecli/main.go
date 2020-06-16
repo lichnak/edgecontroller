@@ -47,7 +47,7 @@ func init() {
 	flag.StringVar(&Cfg.Brg, "brg", "", "OVS bridge an interface would be attached to")
 	flag.StringVar(&Cfg.Drv, "drv", "", "Driver to be used")
 	flag.StringVar(&Cfg.CertsDir, "certsdir", "./certs/client/interfaceservice", "Directory of key and certificate")
-	flag.IntVar(&Cfg.Timeout, "timeout", 6, "Timeout value for grpc call (in seconds)")
+	flag.IntVar(&Cfg.Timeout, "timeout", 20, "Timeout value for grpc call (in seconds)")
 }
 
 func getTransportCredentials() (*credentials.TransportCredentials, error) {
