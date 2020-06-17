@@ -114,6 +114,10 @@ spec:
   activeDeadlineSeconds: 100
   template:
     spec:
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       restartPolicy: Never
       containers:
         - name: openness-biosfw-job
