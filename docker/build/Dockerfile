@@ -8,14 +8,14 @@ ENV GO111MODULE on
 
 WORKDIR /go/src/github.com/otcshare/edgecontroller
 
-RUN apk add git
+RUN apk add --no-cache git=1.8.3.1
 
 COPY go.mod .
 COPY go.sum .
 
 ARG GITHUB_TOKEN
 ENV github_token=$GITHUB_TOKEN
-RUN if [[ -n "${github_token}" ]]; \
+RUN if [ -n "${github_token}" ]; \
 	then git config --global url.https://${github_token}@github.com/.insteadOf https://github.com/; \
 	fi;
 
