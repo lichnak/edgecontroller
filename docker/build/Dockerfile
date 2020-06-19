@@ -8,7 +8,7 @@ ENV GO111MODULE on
 
 WORKDIR /go/src/github.com/otcshare/edgecontroller
 
-RUN apk add --no-cache git=1.8.3.1
+RUN apk add --no-cache git=2.24.3-r0
 
 COPY go.mod .
 COPY go.sum .
