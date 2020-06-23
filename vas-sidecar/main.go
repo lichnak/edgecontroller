@@ -24,33 +24,38 @@ import (
 
 // VASInfo describes the video analytics service
 type VASInfo struct {
-	Platform    string `json:"platform"`
-	ID          string `json:"id"`
-	Namespace   string `json:"namespace"`
-	EndpointURI string `json:"endpointURI"`
-	Description string `json:"description"`
-	Framework   string `json:"framework"`
-	Pipelines []string `json:"pipelines"`
+	Platform    string   `json:"platform"`
+	ID          string   `json:"id"`
+	Namespace   string   `json:"namespace"`
+	EndpointURI string   `json:"endpointURI"`
+	Description string   `json:"description"`
+	Framework   string   `json:"framework"`
+	Pipelines   []string `json:"pipelines"`
 }
 
-// Is there any need to define structs to contain parameters?
+// VASGetPipelines described the return of GET /pipelines API
+// https://github.com/intel/video-analytics-serving/blob/master/interfaces.md#get-pipelines
 type VASGetPipelines struct {
-	Description string          `json:"description,omitempty"`
-	Name        string          `json:"name,omitempty"`
-	Parameters  json.RawMessage `json:"parameters,omitempty"`
-	Type        string          `json:"type,omitempty"`
-	Version     string          `json:"version,omitempty"`
+	Description string `json:"description,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Type        string `json:"type,omitempty"`
+	Version     string `json:"version,omitempty"`
 }
 
-//Connectivity constants
+// Connectivity constants
 const (
-	EAAServerName = "eaa.openness"
-	EAAServerPort = "4430"
-	EAAServPort   = "800"
+	EAAEndpoint   = "eaa.openness"
+	EAAHttpsPort  = "443"
+	EAAAuthPort   = "80"
 	EAACommonName = "eaa.openness"
 )
 
-func getCredentials(prvKey *ecdsa.PrivateKey) eaa.AuthCredentials {
+var VASPort string
+
+func getCredentials(prvKey *ecdsa.PrivateKey) (eaa.AuthCredentials, error) {
+
+	var prodCreds eaa.AuthCredentials
+
 	certTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
 			CommonName:   "openvino:producer",
@@ -63,7 +68,7 @@ func getCredentials(prvKey *ecdsa.PrivateKey) eaa.AuthCredentials {
 	prodCsrBytes, err := x509.CreateCertificateRequest(rand.Reader,
 		&certTemplate, prvKey)
 	if err != nil {
-		log.Fatal(err)
+		return prodCreds, err
 	}
 	csrMem := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST",
 		Bytes: prodCsrBytes})
@@ -74,25 +79,28 @@ func getCredentials(prvKey *ecdsa.PrivateKey) eaa.AuthCredentials {
 
 	reqBody, err := json.Marshal(prodID)
 	if err != nil {
-		log.Fatal(err)
+		return prodCreds, err
 	}
-	resp, err := http.Post("http://"+EAAServerName+":"+EAAServPort+"/auth",
+	resp, err := http.Post("http://"+EAAEndpoint+":"+EAAAuthPort+"/auth",
 		"", bytes.NewBuffer(reqBody))
 	if err != nil {
-		log.Fatal(err)
+		return prodCreds, err
 	}
 
-	var prodCreds eaa.AuthCredentials
 	err = json.NewDecoder(resp.Body).Decode(&prodCreds)
 	if err != nil {
-		log.Fatal(err)
+		return prodCreds, err
 	}
 
-	return prodCreds
+	return prodCreds, nil
 }
 
 func authenticate(prvKey *ecdsa.PrivateKey) (*http.Client, error) {
-	prodCreds := getCredentials(prvKey)
+
+	prodCreds, err := getCredentials(prvKey)
+	if err != nil {
+		return nil, err
+	}
 
 	x509Encoded, err := x509.MarshalECPrivateKey(prvKey)
 	if err != nil {
@@ -133,17 +141,15 @@ func authenticate(prvKey *ecdsa.PrivateKey) (*http.Client, error) {
 func activateService(client *http.Client, payload []byte) error {
 
 	req, err := http.NewRequest("POST",
-		"https://"+EAAServerName+":"+EAAServerPort+"/services",
+		"https://"+EAAEndpoint+":"+EAAHttpsPort+"/services",
 		bytes.NewReader(payload))
 	if err != nil {
-		log.Printf("Service-activation request creation failed:", err)
-		return err
+		return errors.New("Service-activation request creation failed: " + err.Error())
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Service-activation request failed:", err)
-		return err
+		return errors.New("Service-activation request failed: " + err.Error())
 	}
 
 	err = resp.Body.Close()
@@ -157,7 +163,7 @@ func activateService(client *http.Client, payload []byte) error {
 func deactivateService(client *http.Client) {
 
 	req, err := http.NewRequest("DELETE",
-		"https://"+EAAServerName+":"+EAAServerPort+"/services", nil)
+		"https://"+EAAEndpoint+":"+EAAHttpsPort+"/services", nil)
 	if err != nil {
 		log.Printf("Unsubscription request creation failed:", err)
 		return
@@ -175,9 +181,9 @@ func deactivateService(client *http.Client) {
 	}
 }
 
-// ConnectToServing ensures the attached Serving app is running, and takes the
-// runtime variables
-func ConnectToServing() ([]string, error) {
+// GetPipelinesFromVAS ensures the attached Serving app is running, and takes
+// the runtime variables
+func GetPipelinesFromVAS() ([]string, error) {
 
 	// HTTP client
 	client := &http.Client{
@@ -188,21 +194,18 @@ func ConnectToServing() ([]string, error) {
 	VASPipelines := make([]VASGetPipelines, 0)
 
 	req, err := http.NewRequest("GET",
-		"http://localhost:8080/pipelines", nil)
+		"http://localhost:"+VASPort+"/pipelines", nil)
 	if err != nil {
-		log.Println("GET /pipelines creation failed:", err)
-		return pipelines, err
+		return pipelines, errors.New("GET /pipelines creation failed: " + err.Error())
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("GET /pipelines request failed:", err)
-		return pipelines, err
+		return pipelines, errors.New("GET /pipelines request failed: " + err.Error())
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&VASPipelines)
 	if err != nil {
-		log.Println("Service-list decode failed:", err)
-		return pipelines, err
+		return pipelines, errors.New("Service-list decode failed: " + err.Error())
 	}
 
 	err = resp.Body.Close()
@@ -211,7 +214,7 @@ func ConnectToServing() ([]string, error) {
 	}
 
 	for _, p := range VASPipelines {
-		pipelines = append(pipelines, p.Name + "/" + p.Version)
+		pipelines = append(pipelines, p.Name+"/"+p.Version)
 	}
 
 	return pipelines, nil
@@ -222,28 +225,44 @@ func main() {
 
 	// get service from env variables
 	platform := os.Getenv("PLATFORM")
+	if platform == "" {
+		log.Fatal("Env variable PLATFORM undefined")
+		return
+	}
 
 	// get framework from env variables
 	framework := os.Getenv("FRAMEWORK")
+	if framework == "" {
+		log.Fatal("Env variable FRAMEWORK undefined")
+		return
+	}
 
 	// get namespace from env variables
 	namespace := os.Getenv("NAMESPACE")
-
-	// get VAS port from env variables
-	VASPort := os.Getenv("VAS_PORT")
-
-	info := VASInfo{
-		Platform: platform,
-		ID: "analytics-"+framework,
-		Namespace: namespace,
-		EndpointURI: "http://analytics-"+framework+"."+namespace+":"+VASPort,
-		Description: "Video Analytics Serving",
-		Framework: framework,
+	if namespace == "" {
+		log.Fatal("Env variable NAMESPACE undefined")
+		return
 	}
 
-	pipelines, err := ConnectToServing()
+	// get VAS port from env variables
+	VASPort = os.Getenv("VAS_PORT")
+	if VASPort == "" {
+		log.Fatal("Env variable VAS_PORT undefined")
+		return
+	}
+
+	info := VASInfo{
+		Platform:    platform,
+		ID:          "analytics-" + framework,
+		Namespace:   namespace,
+		EndpointURI: "http://analytics-" + framework + "." + namespace + ":" + VASPort,
+		Description: "Video Analytics Serving",
+		Framework:   framework,
+	}
+
+	pipelines, err := GetPipelinesFromVAS()
 	if err != nil {
-		log.Fatal("Error connecting to serving: %#v", err)
+		log.Fatal(err)
 		return
 	}
 	info.Pipelines = pipelines
@@ -260,15 +279,15 @@ func main() {
 	}
 
 	// perform CSR to authenticate and retrieve certificate
-	servPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	prodPriv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
-		log.Fatal("Error generating key: %#v", err)
+		log.Fatal(err)
 		return
 	}
 
-	client, err := authenticate(servPriv)
+	client, err := authenticate(prodPriv)
 	if err != nil {
-		log.Fatal("Error authenticating: %#v", err)
+		log.Fatal(err)
 		return
 	}
 
@@ -278,7 +297,7 @@ func main() {
 
 	err = activateService(client, requestByte)
 	if err != nil {
-		log.Fatal("Error activating service: %#v", err)
+		log.Fatal(err)
 		return
 	}
 
