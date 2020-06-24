@@ -251,11 +251,18 @@ func main() {
 		return
 	}
 
+	var endpoint string
+	if namespace == "default" {
+		endpoint = "http://analytics-" + framework + ":" + VASPort
+	} else {
+		endpoint = "http://analytics-" + framework + "." + namespace + ":" + VASPort
+	}
+
 	info := VASInfo{
 		Platform:    platform,
 		ID:          "analytics-" + framework,
 		Namespace:   namespace,
-		EndpointURI: "http://analytics-" + framework + "." + namespace + ":" + VASPort,
+		EndpointURI: endpoint,
 		Description: "Video Analytics Serving",
 		Framework:   framework,
 	}
