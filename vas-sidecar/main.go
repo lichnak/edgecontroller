@@ -223,6 +223,8 @@ func GetPipelinesFromVAS() ([]string, error) {
 // StartSidecar starts a Service on EAA for VAS
 func main() {
 
+	log.Printf("VAS sidecar started..")
+
 	// get service from env variables
 	platform := os.Getenv("PLATFORM")
 	if platform == "" {
@@ -273,6 +275,8 @@ func main() {
 		return
 	}
 	info.Pipelines = pipelines
+
+	log.Printf("%+v\n", info)
 
 	servURN := eaa.URN{
 		ID:        info.ID,
