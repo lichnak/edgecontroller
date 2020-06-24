@@ -19,7 +19,7 @@ import (
 	"os"
 	"time"
 
-	"eaa"
+	eaa "github.com/otcshare/edgenode/pkg/eaa"
 )
 
 // VASInfo describes the video analytics service
