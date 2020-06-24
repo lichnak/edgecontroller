@@ -22,4 +22,4 @@ USER $username
 WORKDIR $user_dir
 
 COPY ./vas-sidecar ./
-ENTRYPOINT ["sudo", "-E", "./vas-sidecar"]
+ENTRYPOINT ["./vas-sidecar"]
