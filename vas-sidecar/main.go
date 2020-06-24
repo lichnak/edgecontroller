@@ -51,6 +51,7 @@ const (
 )
 
 var VASPort string
+var stayAlive bool
 
 func getCredentials(prvKey *ecdsa.PrivateKey) (eaa.AuthCredentials, error) {
 
@@ -222,34 +223,33 @@ func GetPipelinesFromVAS() ([]string, error) {
 
 // StartSidecar starts a Service on EAA for VAS
 func main() {
-
-	log.Printf("VAS sidecar started..")
+	log.Printf("Video Analytics Serving sidecar started..")
 
 	// get service from env variables
 	platform := os.Getenv("PLATFORM")
 	if platform == "" {
-		log.Fatal("Env variable PLATFORM undefined")
+		log.Fatal("ERROR: env variable PLATFORM undefined")
 		return
 	}
 
 	// get framework from env variables
 	framework := os.Getenv("FRAMEWORK")
 	if framework == "" {
-		log.Fatal("Env variable FRAMEWORK undefined")
+		log.Fatal("ERROR: env variable FRAMEWORK undefined")
 		return
 	}
 
 	// get namespace from env variables
 	namespace := os.Getenv("NAMESPACE")
 	if namespace == "" {
-		log.Fatal("Env variable NAMESPACE undefined")
+		log.Fatal("ERROR: env variable NAMESPACE undefined")
 		return
 	}
 
 	// get VAS port from env variables
 	VASPort = os.Getenv("VAS_PORT")
 	if VASPort == "" {
-		log.Fatal("Env variable VAS_PORT undefined")
+		log.Fatal("ERROR: env variable VAS_PORT undefined")
 		return
 	}
 
@@ -312,8 +312,10 @@ func main() {
 		return
 	}
 
-	loop := true
-	for loop {
+	log.Printf("Video Analytics service registered successfully!")
+
+	stayAlive = true
+	for stayAlive {
 		time.Sleep(60 * time.Second)
 	}
 

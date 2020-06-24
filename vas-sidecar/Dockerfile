@@ -3,6 +3,10 @@
 
 FROM centos:7.6.1810
 
+ENV http_proxy=$http_proxy
+ENV https_proxy=$https_proxy
+ENV no_proxy=$no_proxy,eaa.openness
+
 RUN yum install -y sudo \
 	&& yum clean all
 
@@ -18,4 +22,4 @@ USER $username
 WORKDIR $user_dir
 
 COPY ./vas-sidecar ./
-CMD ["sudo", "./vas-sidecar"]
+CMD ["sudo", "-E", "./vas-sidecar"]
