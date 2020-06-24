@@ -19,7 +19,7 @@ import (
 	"os"
 	"time"
 
-	eaa
+	"eaa"
 )
 
 // VASInfo describes the video analytics service
