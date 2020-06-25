@@ -54,6 +54,7 @@ endef
 	minikube-install kubectl-install minikube-wait \
 	ui-up ui-down \
 	nfd-master-up nfd-master-down \
+	vas-sidecar \
 	test-k8s test-api-k8s \
 	test-unit test-api test-dnscli
 
@@ -64,6 +65,7 @@ help:
 	@echo "  build             to build the project to the ./dist/ folder"
 	@echo "  build-ifsvccli    to build interfaceservice CLI to the ./dist/ folder"
 	@echo "  build-dnscli      to build edgednscli to the ./dist/ folder"
+	@echo "  vas-sidecar       to build video analytics serving sidecar"
 	@echo ""
 	@echo "Services:"
 	@echo "  all-up            to start the full controller stack"
@@ -250,6 +252,9 @@ nfd-master-up:
 
 nfd-master-down:
 	docker-compose stop nfd-master
+
+vas-sidecar:
+	cd ./vas-sidecar && go build -o ./vas-sidecar
 
 test-unit:
 	ginkgo -v -r --randomizeAllSpecs --randomizeSuites \
