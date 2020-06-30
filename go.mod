@@ -14,8 +14,8 @@ require (
 	github.com/joho/godotenv v1.3.0
 	github.com/onsi/ginkgo v1.12.2
 	github.com/onsi/gomega v1.10.1
-	github.com/open-ness/common/log v0.0.0-20200410092658-0c4ca4ce7794
-	github.com/open-ness/common/proxy v0.0.0-20200410092658-0c4ca4ce7794
+	github.com/open-ness/common/log v0.0.0-20200630150849-16c6d4d90dbf
+	github.com/open-ness/common/proxy v0.0.0-20200630150849-16c6d4d90dbf
 	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
