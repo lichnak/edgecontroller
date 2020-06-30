@@ -50,7 +50,10 @@ const (
 	EAACommonName = "eaa.openness"
 )
 
-var VASPort string
+var platform string
+var framework string
+var namespace string
+var servingPort string
 var stayAlive bool
 
 func getCredentials(prvKey *ecdsa.PrivateKey) (eaa.AuthCredentials, error) {
@@ -59,7 +62,7 @@ func getCredentials(prvKey *ecdsa.PrivateKey) (eaa.AuthCredentials, error) {
 
 	certTemplate := x509.CertificateRequest{
 		Subject: pkix.Name{
-			CommonName:   "openvino:producer",
+			CommonName:   namespace + ":analytics-" + framework,
 			Organization: []string{"Intel Corporation"},
 		},
 		SignatureAlgorithm: x509.ECDSAWithSHA256,
@@ -182,9 +185,7 @@ func deactivateService(client *http.Client) {
 	}
 }
 
-// GetPipelinesFromVAS ensures the attached Serving app is running, and takes
-// the runtime variables
-func GetPipelinesFromVAS() ([]string, error) {
+func getPipelinesFromVAS() ([]string, error) {
 
 	// HTTP client
 	client := &http.Client{
@@ -195,7 +196,7 @@ func GetPipelinesFromVAS() ([]string, error) {
 	VASPipelines := make([]VASGetPipelines, 0)
 
 	req, err := http.NewRequest("GET",
-		"http://localhost:"+VASPort+"/pipelines", nil)
+		"http://localhost:"+servingPort+"/pipelines", nil)
 	if err != nil {
 		return pipelines, errors.New("GET /pipelines creation failed: " + err.Error())
 	}
@@ -221,43 +222,42 @@ func GetPipelinesFromVAS() ([]string, error) {
 	return pipelines, nil
 }
 
-// StartSidecar starts a Service on EAA for VAS
 func main() {
 	log.Printf("Video Analytics Serving sidecar started..")
 
 	// get service from env variables
-	platform := os.Getenv("PLATFORM")
+	platform = os.Getenv("PLATFORM")
 	if platform == "" {
 		log.Fatal("ERROR: env variable PLATFORM undefined")
 		return
 	}
 
 	// get framework from env variables
-	framework := os.Getenv("FRAMEWORK")
+	framework = os.Getenv("FRAMEWORK")
 	if framework == "" {
 		log.Fatal("ERROR: env variable FRAMEWORK undefined")
 		return
 	}
 
 	// get namespace from env variables
-	namespace := os.Getenv("NAMESPACE")
+	namespace = os.Getenv("NAMESPACE")
 	if namespace == "" {
 		log.Fatal("ERROR: env variable NAMESPACE undefined")
 		return
 	}
 
 	// get VAS port from env variables
-	VASPort = os.Getenv("VAS_PORT")
-	if VASPort == "" {
+	servingPort = os.Getenv("VAS_PORT")
+	if servingPort == "" {
 		log.Fatal("ERROR: env variable VAS_PORT undefined")
 		return
 	}
 
 	var endpoint string
 	if namespace == "default" {
-		endpoint = "http://analytics-" + framework + ":" + VASPort
+		endpoint = "http://analytics-" + framework + ":" + servingPort
 	} else {
-		endpoint = "http://analytics-" + framework + "." + namespace + ":" + VASPort
+		endpoint = "http://analytics-" + framework + "." + namespace + ":" + servingPort
 	}
 
 	info := VASInfo{
@@ -269,7 +269,7 @@ func main() {
 		Framework:   framework,
 	}
 
-	pipelines, err := GetPipelinesFromVAS()
+	pipelines, err := getPipelinesFromVAS()
 	if err != nil {
 		log.Fatal(err)
 		return
