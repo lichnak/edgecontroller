@@ -8,9 +8,9 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	cce "github.com/otcshare/edgecontroller"
-	"github.com/otcshare/edgecontroller/grpc"
-	evapb "github.com/otcshare/edgecontroller/pb/eva"
+	cce "github.com/open-ness/edgecontroller"
+	"github.com/open-ness/edgecontroller/grpc"
+	evapb "github.com/open-ness/edgecontroller/pb/eva"
 	"github.com/pkg/errors"
 )
 

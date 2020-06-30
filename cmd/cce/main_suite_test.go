@@ -39,10 +39,10 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/grpclog"
 
-	cceGRPC "github.com/otcshare/edgecontroller/grpc"
-	authpb "github.com/otcshare/edgecontroller/pb/auth"
-	"github.com/otcshare/edgecontroller/pki"
-	"github.com/otcshare/edgecontroller/swagger"
+	cceGRPC "github.com/open-ness/edgecontroller/grpc"
+	authpb "github.com/open-ness/edgecontroller/pb/auth"
+	"github.com/open-ness/edgecontroller/pki"
+	"github.com/open-ness/edgecontroller/swagger"
 )
 
 var (
@@ -101,7 +101,7 @@ func initAuthSvcCli() {
 
 func startup() {
 	By("Building the controller")
-	exe, err := gexec.Build("github.com/otcshare/edgecontroller/cmd/cce")
+	exe, err := gexec.Build("github.com/open-ness/edgecontroller/cmd/cce")
 	Expect(err).ToNot(HaveOccurred(), "Problem building service")
 
 	By("Creating a temp dir for telemetry output files")
@@ -159,7 +159,7 @@ func startup() {
 
 	By("Building the node")
 	exe, err = gexec.Build(
-		"github.com/otcshare/edgecontroller/test/node/grpc")
+		"github.com/open-ness/edgecontroller/test/node/grpc")
 	Expect(err).ToNot(HaveOccurred(), "Problem building node")
 
 	cmd = exec.Command(exe)

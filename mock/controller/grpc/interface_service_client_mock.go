@@ -7,8 +7,8 @@ import (
 	"context"
 
 	"github.com/golang/protobuf/ptypes/empty"
-	gmock "github.com/otcshare/edgecontroller/mock/node/grpc"
-	elapb "github.com/otcshare/edgecontroller/pb/ela"
+	gmock "github.com/open-ness/edgecontroller/mock/node/grpc"
+	elapb "github.com/open-ness/edgecontroller/pb/ela"
 	"google.golang.org/grpc"
 )
 

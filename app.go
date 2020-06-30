@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/otcshare/edgecontroller/uuid"
+	"github.com/open-ness/edgecontroller/uuid"
 )
 
 // App is an application.

@@ -5,7 +5,7 @@ package k8s_test
 
 import (
 	"fmt"
-	"github.com/otcshare/edgecontroller/swagger"
+	"github.com/open-ness/edgecontroller/swagger"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/otcshare/edgecontroller/uuid"
+	"github.com/open-ness/edgecontroller/uuid"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"

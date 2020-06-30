@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/otcshare/edgecontroller/edgednscli"
+	"github.com/open-ness/edgecontroller/edgednscli"
 )
 
 func main() {

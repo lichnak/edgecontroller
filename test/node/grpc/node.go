@@ -22,12 +22,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/otcshare/common/log"
-	"github.com/otcshare/common/proxy/progutil"
-	nodegmock "github.com/otcshare/edgecontroller/mock/node/grpc"
-	elapb "github.com/otcshare/edgecontroller/pb/ela"
-	evapb "github.com/otcshare/edgecontroller/pb/eva"
-	"github.com/otcshare/edgecontroller/pki"
+	"github.com/open-ness/common/log"
+	"github.com/open-ness/common/proxy/progutil"
+	nodegmock "github.com/open-ness/edgecontroller/mock/node/grpc"
+	elapb "github.com/open-ness/edgecontroller/pb/ela"
+	evapb "github.com/open-ness/edgecontroller/pb/eva"
+	"github.com/open-ness/edgecontroller/pki"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )

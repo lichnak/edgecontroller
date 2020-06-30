@@ -7,7 +7,7 @@ import (
 	"context"
 
 	"github.com/golang/protobuf/ptypes/empty"
-	elapb "github.com/otcshare/edgecontroller/pb/ela"
+	elapb "github.com/open-ness/edgecontroller/pb/ela"
 )
 
 type dnsService struct {

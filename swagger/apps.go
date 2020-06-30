@@ -4,7 +4,7 @@
 package swagger
 
 import (
-	cce "github.com/otcshare/edgecontroller"
+	cce "github.com/open-ness/edgecontroller"
 )
 
 // AppSummary is a summary representation of the app.

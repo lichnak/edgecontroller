@@ -6,7 +6,7 @@ FROM golang:1.12-alpine
 
 ENV GO111MODULE on
 
-WORKDIR /go/src/github.com/otcshare/edgecontroller
+WORKDIR /go/src/github.com/open-ness/edgecontroller
 
 RUN apk add --no-cache git=2.24.3-r0
 

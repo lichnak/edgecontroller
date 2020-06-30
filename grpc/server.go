@@ -21,10 +21,10 @@ import (
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 
-	cce "github.com/otcshare/edgecontroller"
-	authpb "github.com/otcshare/edgecontroller/pb/auth"
-	evapb "github.com/otcshare/edgecontroller/pb/eva"
-	"github.com/otcshare/edgecontroller/uuid"
+	cce "github.com/open-ness/edgecontroller"
+	authpb "github.com/open-ness/edgecontroller/pb/auth"
+	evapb "github.com/open-ness/edgecontroller/pb/eva"
+	"github.com/open-ness/edgecontroller/uuid"
 )
 
 const (
@@ -35,7 +35,7 @@ const (
 
 	// This is the gRPC full RPC path (format: /${package}.${service}/${rpc})
 	// for the authentication endpoint. The proto is defined here:
-	// https://github.com/otcshare/specs/blob/master/schema/pb/auth.proto
+	// https://github.com/open-ness/specs/blob/master/schema/pb/auth.proto
 	//
 	// This path is used to allow Appliances connected (to the EnrollmentSNI)
 	// without a valid client certificate to hit the enrollment endpoint to

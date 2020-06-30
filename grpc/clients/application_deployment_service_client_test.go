@@ -6,8 +6,8 @@ package clients_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	cce "github.com/otcshare/edgecontroller"
-	"github.com/otcshare/edgecontroller/uuid"
+	cce "github.com/open-ness/edgecontroller"
+	"github.com/open-ness/edgecontroller/uuid"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -4,7 +4,7 @@
 package swagger
 
 import (
-	cce "github.com/otcshare/edgecontroller"
+	cce "github.com/open-ness/edgecontroller"
 )
 
 // PolicySummary is a summary of an application traffic policy or interface traffic policy.

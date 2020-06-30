@@ -17,8 +17,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	cce "github.com/otcshare/edgecontroller"
-	authpb "github.com/otcshare/edgecontroller/pb/auth"
+	cce "github.com/open-ness/edgecontroller"
+	authpb "github.com/open-ness/edgecontroller/pb/auth"
 )
 
 var _ = Describe("Node Auth Service", func() {

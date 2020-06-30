@@ -11,7 +11,7 @@ import (
 	"os"
 	"sync"
 
-	logger "github.com/otcshare/common/log"
+	logger "github.com/open-ness/common/log"
 )
 
 const (

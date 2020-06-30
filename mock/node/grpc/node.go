@@ -4,8 +4,8 @@
 package grpc
 
 import (
-	elapb "github.com/otcshare/edgecontroller/pb/ela"
-	evapb "github.com/otcshare/edgecontroller/pb/eva"
+	elapb "github.com/open-ness/edgecontroller/pb/ela"
+	evapb "github.com/open-ness/edgecontroller/pb/eva"
 )
 
 // MockNode provides a mock node gRPC server.

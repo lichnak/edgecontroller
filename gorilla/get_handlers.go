@@ -6,7 +6,7 @@ package gorilla
 import (
 	"context"
 
-	cce "github.com/otcshare/edgecontroller"
+	cce "github.com/open-ness/edgecontroller"
 )
 
 func handleGetNodes(

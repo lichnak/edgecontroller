@@ -10,10 +10,10 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/otcshare/edgecontroller/swagger"
+	"github.com/open-ness/edgecontroller/swagger"
 
-	cce "github.com/otcshare/edgecontroller"
-	"github.com/otcshare/edgecontroller/uuid"
+	cce "github.com/open-ness/edgecontroller"
+	"github.com/open-ness/edgecontroller/uuid"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/ginkgo/extensions/table"
