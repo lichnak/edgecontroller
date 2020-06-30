@@ -42,15 +42,11 @@ endif
 define bring_ui_up
 	docker-compose up -d landing-ui
 	docker-compose up -d ui
-	docker-compose up -d cups-ui
-	docker-compose up -d cnca-ui
 endef
 
 define bring_ui_down
 	docker-compose stop landing-ui
 	docker-compose stop ui
-	docker-compose stop cups-ui
-	docker-compose stop cnca-ui
 endef
 
 .PHONY: help all-up all-down clean build build-dnscli lint test \
@@ -58,6 +54,7 @@ endef
 	minikube-install kubectl-install minikube-wait \
 	ui-up ui-down \
 	nfd-master-up nfd-master-down \
+	vas-sidecar \
 	test-k8s test-api-k8s \
 	test-unit test-api test-dnscli
 
@@ -68,6 +65,7 @@ help:
 	@echo "  build             to build the project to the ./dist/ folder"
 	@echo "  build-ifsvccli    to build interfaceservice CLI to the ./dist/ folder"
 	@echo "  build-dnscli      to build edgednscli to the ./dist/ folder"
+	@echo "  vas-sidecar       to build video analytics serving sidecar"
 	@echo ""
 	@echo "Services:"
 	@echo "  all-up            to start the full controller stack"
@@ -84,16 +82,6 @@ help:
 	@echo "  cce-ui-down       to stop the production UI container"
 	@echo "  cce-ui-dev-up     to start local developer instance of the UI"
 	@echo "  cce-ui-test       run the UI project tests"
-	@echo ""
-	@echo "  cups-ui-up        to start the production UI Container"
-	@echo "  cups-ui-down      to stop the production UI container"
-	@echo "  cups-ui-dev-up    to start local developer instance of the UI"
-	@echo "  cups-ui-test      run the UI project tests"
-	@echo ""
-	@echo "  cnca-ui-up        to start the production UI Container"
-	@echo "  cnca-ui-down      to stop the production UI container"
-	@echo "  cnca-ui-dev-up    to start local developer instance of the UI"
-	@echo "  cnca-ui-test      run the UI project tests"
 	@echo ""
 	@echo "  landing-ui-up     to start the production UI Container"
 	@echo "  landing-ui-down   to stop the production UI container"
@@ -129,7 +117,7 @@ all-up: db-up cce-up ui-up
 all-down: db-down cce-down ui-down
 
 build:
-	docker-compose build mysql cce ui cups-ui cnca-ui landing-ui
+	docker-compose build mysql cce ui landing-ui
 
 	@# TODO: Remove the following when the test node is built as a Docker image and add it to the docker-compose.yml
 	@# and add details to the README about running a test node.
@@ -243,30 +231,6 @@ cce-ui-dev-up:
 cce-ui-test:
 	cd ui/controller && yarn install && yarn build && yarn test
 
-cups-ui-up:
-	docker-compose up -d cups-ui
-
-cups-ui-down:
-	docker-compose stop cups-ui
-
-cups-ui-dev-up:
-	cd ui/cups && yarn install && yarn start
-
-cups-ui-test:
-	cd ui/cups && yarn install && yarn build && yarn test
-
-cnca-ui-up:
-	docker-compose up -d cnca-ui
-
-cnca-ui-down:
-	docker-compose stop cnca-ui
-
-cnca-ui-dev-up:
-	cd ui/cnca && yarn install && yarn start
-
-cnca-ui-test:
-	cd ui/cnca && yarn install && yarn build && yarn test
-
 landing-ui-up:
 	docker-compose up -d landing-ui
 
@@ -288,6 +252,9 @@ nfd-master-up:
 
 nfd-master-down:
 	docker-compose stop nfd-master
+
+vas-sidecar:
+	cd ./vas-sidecar && go build -o ./vas-sidecar
 
 test-unit:
 	ginkgo -v -r --randomizeAllSpecs --randomizeSuites \

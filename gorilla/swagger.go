@@ -22,6 +22,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	cce "github.com/open-ness/edgecontroller"
@@ -153,47 +154,55 @@ func (g *Gorilla) swagPATCHNodeByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // Used for DELETE /nodes/{node_id} endpoint
+// and DELETE /nodes/{node_id}?force=true endpoint
 func (g *Gorilla) swagDELETENodeByID(w http.ResponseWriter, r *http.Request) {
 	// Load the controller to access the persistence and the payload
 	ctrl := r.Context().Value(contextKey("controller")).(*cce.Controller)
 
-	// Check that we can delete the entity
-	if statusCode, err := checkDBDeleteNodes(r.Context(), ctrl.PersistenceService, mux.Vars(r)["node_id"]); err != nil {
-		log.Errf("Error running DB logic: %v", err)
-		w.WriteHeader(statusCode)
+	// Check if query contains force parameter
+	forceQuery := r.URL.Query()["force"]
+
+	forced := false
+
+	var err error
+
+	// Parse query force parameter
+	if len(forceQuery) > 0 {
+		forced, err = strconv.ParseBool(forceQuery[0])
+		if err != nil {
+			log.Errf("Wrong query parameter: %v", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+	}
+
+	if forced {
+		if err = handleForcedDeleteNodesDNSConfigs(r.Context(), ctrl, mux.Vars(r)["node_id"]); err != nil {
+			log.Errf("Error force-deleting node's DNS: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if err = handleForceDeleteNodesApps(r.Context(), ctrl, mux.Vars(r)["node_id"]); err != nil {
+			log.Errf("Error force-deleting node's apps: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if err = handleForceDeleteNodesInterfacePolicy(r.Context(), ctrl, mux.Vars(r)["node_id"]); err != nil {
+			log.Errf("Error force-deleting node's interface policies: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
+	if err = handleDeleteNode(r.Context(), ctrl, mux.Vars(r)["node_id"]); err != nil {
+		log.Errf("Error deleting node: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		_, err = w.Write([]byte(err.Error()))
 		if err != nil {
 			log.Errf("Error writing response: %v", err)
 		}
-		return
-	}
-
-	// Fetch the entity from persistence and check if it's there
-	persisted, err := ctrl.PersistenceService.Read(r.Context(), mux.Vars(r)["node_id"], &cce.Node{})
-	if err != nil {
-		log.Errf("Error reading entity: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		_, err = w.Write([]byte(err.Error()))
-		if err != nil {
-			log.Errf("Error writing response: %v", err)
-		}
-		return
-	}
-	if persisted == nil {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-
-	ok, err := ctrl.PersistenceService.Delete(r.Context(), mux.Vars(r)["node_id"], &cce.Node{})
-	if err != nil {
-		log.Errf("Error deleting entity: %v", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// we just fetched the entity, so if !ok then something went wrong
-	if !ok {
-		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }
@@ -1693,6 +1702,7 @@ func (g *Gorilla) swagPOSTNodeApp(w http.ResponseWriter, r *http.Request) { //no
 	if err != nil {
 		log.Errf("Error creating node app: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error: %v", err)
 		return
 	}
 

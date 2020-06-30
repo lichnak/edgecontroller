@@ -13,8 +13,13 @@ if [ -f "$2/key.pem" ] && [ -f "$2/cert.pem" ]; then
     exit 0
 fi
 
-openssl ecparam -genkey -name secp384r1 -out "$2/key.pem"
- 
+if ! openssl version | awk '$2 ~ /(^0\.)|(^1\.(0\.|1\.0))/ { exit 1 }'; then
+	echo "Not supported openssl:"
+	openssl version
+fi
+
+openssl ecparam -genkey -name secp384r1 | openssl pkcs8 -topk8 -nocrypt -out "$2/key.pem"
+
 if [ -z "$3" ]; then
     echo "Generating certificate..."
     openssl req -key "$2/key.pem" -new -x509 -days 1095 -out "$2/cert.pem" -subj "/CN=$1"

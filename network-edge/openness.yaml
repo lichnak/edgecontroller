@@ -47,9 +47,6 @@ spec:
       labels:
         name: eaa
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       initContainers:
       - name: alpine
         image: alpine:latest
@@ -86,16 +83,30 @@ spec:
           mountPath: /home/eaa/certs-sec
         - name: configs
           mountPath: /home/eaa/configs
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: certs-sec
         secret:
           secretName: eaa-tls
+          defaultMode: 384
       - name: certs
         hostPath:
           path: /etc/openness/certs/eaa
       - name: configs
         hostPath:
           path: /etc/openness/configs
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "vcac-zone"
+                  operator: NotIn
+                  values:
+                    - "yes"
 
 ---
 apiVersion: v1
@@ -132,9 +143,6 @@ spec:
       labels:
         name: edgedns
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       containers:
       - name: edgedns
         image: edgednssvr:1.0
@@ -192,6 +200,10 @@ spec:
           mountPath: /root/certs
         - name: certgen
           mountPath: /root/certgen
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: edgednssvr
         hostPath:
@@ -209,6 +221,15 @@ spec:
       - name: certs
         hostPath:
           path: /etc/openness/certs/edgedns
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: "vcac-zone"
+                  operator: NotIn
+                  values:
+                    - "yes"
 
 ---
 apiVersion: apps/v1
@@ -225,9 +246,6 @@ spec:
       labels:
         name: syslog-ng
     spec:
-      tolerations:
-      - key: node-role.kube-ovn/master
-        effect: NoSchedule
       containers:
       - name: syslog-ng
         image: balabit/syslog-ng:3.19.1
@@ -275,6 +293,10 @@ spec:
           mountPath: /root/certs
         - name: certgen
           mountPath: /root/certgen
+      tolerations:
+      - effect: NoSchedule
+        key: cmk
+        operator: Exists
       volumes:
       - name: syslog-conf
         configMap:

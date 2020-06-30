@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-// Copyright (c) 2019 Intel Corporation
+// Copyright (c) 2019-2020 Intel Corporation
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
@@ -98,10 +98,16 @@ class CardItem extends Component {
     this.state = {
       deleted: false,
       dialogShown: false,
+      dialogForceShown: false,
       url: `${this.props.resourcePath}/${this.props.CardItem.id}`
     };
 
+    this.defaultProps = {
+      mayBeForced: false
+    };
+
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleForceDelete = this.handleForceDelete.bind(this);
   }
 
   handleDelete = () => {
@@ -112,6 +118,14 @@ class CardItem extends Component {
     this.setState({ dialogShown: false });
   };
 
+  handleForceDelete = () => {
+    this.setState({ dialogForceShown: true });
+  };
+
+  handleForceClose = () => {
+    this.setState({ dialogForceShown: false });
+  };
+
   handleDeleteReq = () => {
     if (this.state.showLoader === true) {
       return;
@@ -119,10 +133,32 @@ class CardItem extends Component {
 
     this.setState({ showLoader: true });
 
-    ApiClient.delete(this.state.url)
+    this.sendDeleteRequest();
+  };
+
+  handleForceDeleteReq = () => {
+    if (this.state.showLoader === true) {
+      return;
+    }
+
+    this.setState({ showLoader: true });
+
+    this.sendDeleteRequest({
+      params: {
+        force: true
+      }
+    });
+  };
+
+  sendDeleteRequest = (params = {}) => {
+    ApiClient.delete(this.state.url, params)
       .then(() => {
         this.setState({ deleted: true });
-        this.handleClose();
+        if (this.state.dialogForceShown === true) {
+          this.handleForceClose();
+        } else {
+          this.handleClose();
+        }
       })
       .catch((err) => {
         this.props.enqueueSnackbar(`${err.toString()}. Please try again later.`, {
@@ -130,9 +166,16 @@ class CardItem extends Component {
         });
         this.setState({ showLoader: false });
         setTimeout(this.props.closeSnackbar, 2000);
-        this.handleClose();
+        if (this.state.dialogForceShown === true) {
+          this.handleForceClose();
+        } else {
+          this.handleClose();
+          if (this.props.mayBeForced) {
+            this.handleForceDelete();
+          }
+        }
       });
-  };
+  }
 
 
   render() {
@@ -203,6 +246,28 @@ class CardItem extends Component {
             </Button>
             <Button onClick={this.handleDeleteReq} color="primary" autoFocus>
               Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={this.state.dialogForceShown}
+          onClose={this.handleForceClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{`Error occurred on ${CardItem.id} removal.`}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Would you like to force removal?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            {this.state.showLoader ? (<CircularProgress />) : ""}
+            <Button onClick={this.handleForceClose} color="primary">
+              No
+            </Button>
+            <Button onClick={this.handleForceDeleteReq} color="primary" autoFocus>
+              Yes
             </Button>
           </DialogActions>
         </Dialog>
